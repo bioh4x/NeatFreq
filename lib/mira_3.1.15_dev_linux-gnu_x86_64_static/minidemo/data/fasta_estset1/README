@@ -1,0 +1,12 @@
+These EST sequences of triphysaria versicolor haven been taken from
+the NCBI trace archive: http://www.ncbi.nih.gov/Traces/trace.cgi?
+
+They have been preprocessed so that sequencing vectors and poly-A /
+poly-T bases were masked (without further checking).
+
+To download the complete set including SCF data, use this URL:
+http://www.ncbi.nih.gov/Traces/trace.cgi?cmd=retrieve&s=search&m=obtain&val=species_code%3D%27TRIPHYSARIA+VERSICOLOR%27&size=2396&file=trace&gz=on&t=Save&all=on&fasta=on&quality=on&srcf=on&scfrcf=scf&xml=on&tbl=on&dopt=fasta&dispmax=10&page=1
+
+The tvc_mini.fasta contains a 6 sequence subset of Triphysaria for
+demonstration purpose on how to work with miraEST and different strain
+data.

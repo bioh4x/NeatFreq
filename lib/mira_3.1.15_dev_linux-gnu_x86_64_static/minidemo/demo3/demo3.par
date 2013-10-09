@@ -1,0 +1,71 @@
+# a small example of a parameter file for MIRA
+#
+# basically, it does the same thing as the 'demo1' example
+#  EXCEPT it does not search for repetitive sequences!
+#  That is, there will be misassembled repeats present in the
+#  contigs (you will spot them easily)
+#  
+
+#
+# name all the input and output files starting with 'demo2'
+# setting this should be done as very first option
+#
+
+--project=demo3
+
+
+# we want an assembly from scratch (denovo), it's genomic data,
+#  "normal" assembly accuracy and it's sanger data
+
+-job=denovo,genome,normal,sanger 
+
+#
+# by todays standard the data is low quality
+#
+
+-lowqualitydata 
+
+
+# switch to settings for SANGER data
+
+SANGER_SETTINGS
+
+#
+# Tell mira to load a 'file of filenames' that contains
+#  filenames of sequences in EXP format
+
+-LOADREADS:
+ft=fofnexp
+
+# do not load XML ancillary data (we don't have it, all we need is
+#  in the EXP files anyway
+
+mxti=no
+
+
+# switch to settings for common data
+
+COMMON_SETTINGS
+
+# we need to load qualities from the SCF files (that's the only thing
+#  not present in these EXP files)
+
+eq=scf  
+
+
+#
+# ... but our input file is not in this directory (and has
+#  has another name than the expected standard)
+#
+
+-FILENAME:
+fofnexpin=../data/exp_set1/fofn
+
+#
+# The experiment and SCF files are in separate directories, too
+#
+
+-DIRECTORY:
+exp=../data/exp_set1
+scf=../data/scf
+

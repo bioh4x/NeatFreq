@@ -1,0 +1,205 @@
+3.1.15
+------
+- new parameter -CO:emeas1clpec. Automatically sets emea to 1 if proposed end
+  clipping is used (ends will be "clean"). Improves recognition of
+  misassemblies in cases where only the outer fringes of reads differ.
+- change in template handling: to be lenient, MIRA internally added/subtracted
+  10% of the given insertsizes (or at least 1kb). Not anymore! This would give
+  problems with very small libraries (Solexa) or when the given values were
+  "lenient enough" and were made "too lenient" by this and subsequently
+  flagged in different post-processing tools.
+- change in handling template insert size info from XML: previously, MIRA set
+  stdev to a minimum of 500 bases and used 2*stdev to calculate minimum and
+  maximum insert sizes. The 500 bases minimum rule has been removed, and now
+  using 3*stdev
+- new parameter: -GE:tpbd to give template partner build direction on the
+  command line. Defines whether the template partner of a read (in a
+  read-pair) must have the same direction (1) or reverse direction (-1) in a
+  contig.
+- change: when --job=...,454 is used, the default minimum overlap is not 40
+  anymore, but 20. 40 was too conservative, overlaps at weak contig joins were
+  discarded too often.
+- improved graph reduction algorithm: some more small overlaps at low coverage
+  sites are taken to Smith-Waterman. This helps to find some more weak contig
+  joins.
+
+
+3.1.14
+------
+- speed up of routine to find and mark IUPAC bases and unsure bases (IUPc &
+  UNSc). Very noticeable when using annotated genomes as mapping reference.
+- bugfix: IUPC & UNSc were not searched for anymore (introduced in 3.1.12 with
+  the -CO:asir bugfix)
+- re-activated '-d' in convert_project
+- adjusted miramem estimator for mapping of Solexa reads
+
+
+3.1.13
+------
+- improvements for large assemblies with millions of reads where setting up
+  data for new contigs during build is sped up. Especially noticeable in EST
+  assemblies, but also genome assemblies with Solexa.
+
+
+3.1.12
+------
+- new option to speed up assemblies with millions of reads: -AS:mrpc controls
+  the minimum number of reads a contig must potentially have before it is
+  really assembled. This prevents all the small junk contigs with very low
+  numbers of reads in, e.g., Solexa sequencing to be assembled and can speed
+  up the assembly by days.
+- MIRA now uses the tcmalloc library from Google perftools if available. It is
+  highly recommended as it optimises memory allocation and saves a lot of
+  memory on multiple pass assemblies. E.g., memory usage for 810k 454 FLX
+  reads, 45x coverage, 5 pass genome de-novo accurate:
+              3.0.5    8272988 kB
+             3.1.11    8273012 kB
+             3.1.12    9492956 kB
+     3.1.12tcmalloc    6758916 kB
+- change: adapted some estimators in miramem, hopefully giving better
+  estimates for RAM usage during MIRA assemblies.
+- bugfix: array iterator overrun in contig building which had probably no
+  noticeable effect. If, then perhaps rejecting weak matches it would have
+  barely accepted.
+- bugfix: -CO:asir sometimes set repeat markers instead of SNP markers.
+- bugfix: mira could try to check physical presence of SCF data even for
+  non-Sanger reads
+
+
+3.1.11
+------
+- optimisation: memory pre-allocation routines for read growth help to get
+  down memory fragmentation and hence less memory requirement
+  overall. Especially noticeable in high coverage 454 sequencing or with
+  strobed PacBio reads.
+- bugfix: -CO:mr=no was not fully respected. While not used during contig
+  building, possible repeats were always marked in result files and then
+  tranferred to following iterations.
+- bugfix extendADS(): acquireSequences() could throw due to 0 length of a
+  sequence
+
+
+3.1.9
+-----
+- change: mira will stop immediately if it is launched with parameters that
+  suggest miraSearchESTSNPs should be used instead
+- bugfix: est assembly used genomic pathfinding routines instead of EST
+  routines, leading to more contigs with almost identical consensus.
+- bugfix: miraSearchESTSNPs pipeline for steps 2 and 3 did not load results
+  from previous steps.
+- bugfix: fastqselect.tcl script printed out the name of the firt read twice
+
+
+3.1.8
+-----
+- changed wiggle file: more info on strains in the description and smaller
+  files, using a stepping and span of 4 instead of 1
+- new script: fastqselect.tcl (like fastaselect.tcl, but works on fastq)
+- new 3rd party scripts by Tony Travis (qual2ball) and Lionel Guy
+  (caf2aceMiraConsed.pl) to simplify integration of MIRA assemblies in
+  Consed.
+- updated the 3rd party documentation "Instructions for scaffolding MIRA
+  contigs using paired ends" from Gregory Harhay
+
+
+3.1.7
+-----
+- changed method to remove old files which hopefully minimises the number of
+  files which fail to be removed during a run
+- test changes to adapt to >= 2^32 skim hits
+- adapted post-SW scoring for PacBio
+- fixed bug: array underrun in alignment code, introduced in 3.1.3 (don't I
+  love valgrind :-)
+
+
+3.1.6
+-----
+- changed automatic memory management to use all memory minus 15% instead of
+  of minus 10%.
+- speedup of SKIM when running in multiple threads: removed unecessary call of
+  a mutex lock (leftover from debugging code). Very noticable when running at
+  higher thread numbers.
+- bugfix: race condition in SKIM leading to wrong assessment of memory needs
+- bugfix: calculation for assessment of memory needs was faulty, leading to
+  similar problems as the race condition in SKIM above
+- workaround: mapping with data containing artificial reads with lengths of
+  several kilobases led to too high values for rail read length being
+  computed. Fixed by capping at 18kb.
+- temporarily switched off skim junk detection, it might be faulty at high
+  coverages
+
+
+3.1.5
+-----
+- bugfix: reading SSAHA2 data gave an error for Solexa reads beginning with a
+  'N' (now really)
+- bugfix: some SSAHA2 input files led to infinite loops
+- calculation of SW alignment score sped up very slightly
+
+
+3.1.4
+-----
+- bugfix: when read extension was used for any sequencing technology, it was
+  also applied for reads of technologies where read extension was not wished.
+- fixed compilation: new use of the stringcontainer could lead to a static
+  initialisation fiasco (dependent on linker used at compile time) and
+  subsequent crashes directly after start.
+
+
+3.1.3
+-----
+- added first support for PacBio
+- fasta2frag.tcl gets a mode to simulate strobed data
+- reduced hits reported by SKIM when a reads fully covers another. Especially
+  useful for hybrid assemblies of short / long reads.
+- slight improvement of SW parametrisation and alignment algorithm (for
+  strobed reads)
+- fixed error with read names when using mapping mode
+- fixed potential unwanted increase in memory consumption while loading SKIM
+  hits.
+- fixed compile problem of ./src/caf/caf_flexer.flex on CentOS
+- fixed small bug in ./configure.in where rescue values for BOOST paths were
+  not set correctly for some systems
+
+
+3.0.1 (backported from 3.1.2)
+-----------------------------
+This version fixes a few quirks and problems of the initial 3.0.0
+release, some of them leading to MIRA aborting or even hard crashes.
+
+MIRA also was a bit too picky in 3.0.0 for joining some reads. Due to changes
+and algorithm optimisation, there should be notable improvements in contig
+lengths (N50 etc.) in genome assemblies with bad data. In EST assemblies,
+chimera cutbacks are now disabled by default, leading to less cutbacks.
+
+Important note for users of sff_extract in paired-end projects: please switch
+to the newest version of sff_extract (>= 0.2.8) as the old ones contain a bug
+and do not reverse quality values for reverse reads.
+
+- changed SSAHA2 parser to allow for pathological case of empty vector names
+- changed method for average coverage estimation slightly to better cope with
+  extremely skewed distributions (seen in some EST data)
+- added workaround to allow usage of SSAHA2 screening data with Solexa reads
+- improved speed of pathfinder algorithm for repetitive 454 reads
+- improved concurrency of SKIM output, better use of available thread capacity
+- added method to propose smaller cuts at the end of reads in SKIM (-SK:asjdc)
+- added flags to control chimera cutbacks (-SK:ascdc) and junk cutbacks 
+  (-SK:asjdc). On by default for genome assemblies, off for EST assemblies
+- increased speed of SKIM hit reduction for assemblies with long and short
+  reads (Solexa & ...)
+- improved handling of reads with problematic ends which could lead to
+  premature stop of contig building
+- reduced memory need for internal read structure. As part of this and only
+  user visible effect (if at all), the Staden-ID of CAF files is not supported
+  anymore
+- reduced memory needs for tags. Side-effect: slight speed improvement of
+  algorithms using tags
+- bugfix: consensus of Solexa bases only with N now results in N instead of a
+  space
+- bugfix: FASTA file with multiple equal read names now lead to MIRA stopping
+- fixed critical buffer overruns that could lead to weird errors or even to
+  MIRA crashing hard with segmentation faults
+- fixed the annoying "len1 or len2 == 0 ?" bug (turned out to be side-effect
+  of chimera clipping)
+- fixed error in SKIM parametrisation which could lead in some cases to long
+  run times, excessive memory consumption and data corruption.

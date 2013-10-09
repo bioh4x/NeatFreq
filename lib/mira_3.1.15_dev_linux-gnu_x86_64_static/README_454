@@ -1,0 +1,103 @@
+                                                    Rheinfelden, January 2010
+
+
+Please read the README coming with this package. Please also read the
+"mira_454dev.html" (or corresponding man page) that is available in the
+documents.
+
+
+README for assembling 454 sequences with MIRA
+=============================================
+
+To show how MIRA behaves in 454 or 454/Sanger hybrid assemblies, please follow
+the walkthrough guides given in the manual for 454 assemblies.
+
+
+EST-assembly with 454 reads:
+----------------------------
+While I have a data set with 454 ESTs, I currently have no time to work on
+this. In theory, MIRA should be able to assemble 454 data well enough, but
+probably one needs to write a cleaning pipeline for the data.
+
+If anyone volunteers to try out, please go ahead (I'll help where I can).
+
+
+Paired end sequences with 454 reads:
+------------------------------------
+This is covered in the walkthrough guides given in the manual for 454
+assemblies.
+
+
+Short FAQ:
+----------
+0) Q: Where do I start?
+   A: First, read the help file "mira_454dev.html" (or corresponding man
+      page), they're both located in the "docs" directory.
+      Second, I strongly suggest you try out the walkthrough for Bceti data as
+      given in this file.
+
+1) Q: Why do I need to use sequence clipping information? 454 does not use
+      sequencing vectors and the complete sequence should be usable?
+   A: 454 uses a technology that relies on defined sequence adaptors. These
+      adaptors are also partially sequenced and hence are (maybe partially)
+      present in the SFF files (and in converted FASTA files if one does not
+      pay attention when converting).
+      For an assembler, these adaptors behave exactly like sequencing vectors
+      from Sanger sequencing: they are deadly for the assembly.
+      Therefore, take care either not to have the adaptor sequences in your
+      FASTAs or if you do, have the TRACEINFO XML file carry the information
+      on clippings, then nothing can happen.
+
+2) Q: I need to reduce memory consumption for the 454 assembly
+   A: Increase both -SK:pr and -AL:mrs to 90. This will however have as side
+      effect that weaker matches might be missed and therefore a some more
+      contigs as result (and some more reads ending up in the debris). The 454
+      assembler (Newbler) runs with a similar parameter of 90.
+      Also, for eukaryotes, you can try to reduce -SK:mhpr to lower values,
+      perhaps as low as 50.
+      If everything else fails, use -SK:mnr=yes (read about in the mira_hard
+      help file).
+
+3) Q: I have SFF files from the 454 sequencing, can MIRA use these?
+   A: Not directly. You must transform these to CAFs or a combination of
+      FASTA, FASTA qualities and NCBI TRACEINFO files. The easiest way to do
+      this is sff_extract from Jose Blanca. Look up in the helpfile
+      "mira_454dev.html" to see how the later is done. Or ask your sequencing
+      provider to do this for you.
+
+4) Q: Can MIRA use 454 paired-end reads?
+   A: Yes. Look up in the helpfile "mira_454dev.html" to see how this is
+      done.
+
+5) Q: How much memory does one need to assemble 454 data with MIRA?
+   A: Three factors have to come into consideration: the total amount of raw
+      bases, the coverage and the repetitiveness of your genome. The last one
+      is probably unknown before the assembly.
+      To get a rough idea, start the "miramem" program and answer the
+      questions appearing on the screen.
+
+6) Q: How much disk space do I need?
+   A: Quite a bit. Count in several gigabytes.
+
+7) Q: Can MIRA use multiple cores or processors?
+   A: Since 2.9.28x6, parts can. At the moment only the SKIM algorithm can run
+      multiple threads (controlled by "-SK:not").
+      However, there is a drawback: between different runs, assemblies might
+      differ a bit in the low quality / low coverage areas. This cannot be
+      helped at the moment without some tricky and memory consuming
+      countermeasures. Personally, I consider this to be e nuisance, but a
+      very minor one.
+
+
+If you have any question regarding usage of MIRA with 454 or hybrid 454/Sanger
+data, please subscribe to the MIRA talk mailing list (see
+http://www.chevreux.org/mira_mailinglists.html) and send your question to:
+mira_talk@freelists.org
+
+Note: please make sure that the address you subscribe with and the address you
+use for sending mails are the same, else they are filtered away by the mailing
+list daemon.
+
+
+Have fun with your assemblies,
+  Bastien

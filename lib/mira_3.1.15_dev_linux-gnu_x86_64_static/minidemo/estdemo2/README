@@ -1,0 +1,30 @@
+This demo demonstrates the usage of 
+
+    miraEST
+    convert_project
+
+to perform an EST assembly and SNP analysis.
+
+To run the demo, just execute 'runme.sh'.
+
+step1_* files are mostly not of interest, so I won't describe them
+here. 
+
+step2 files are named after the strain or organism they belong
+to (in this case "strain1_*" and "strain2_"). The results in these
+files represent the clean transcripts collected in one strain or
+organism and then assembled by miraEST.
+
+Files in step3_* files show the last step of a complete EST transcript
+analysis: determining and categorizing SNPs in closely related clean
+transcripts.
+
+Once finished, to examine the detected SNPs you can look at the html
+file 'step3_out.html' using a CSS compliant browser. You can also use
+the gap4 program: change into the 'step3_out.gap4da' directory, start
+gap4, make a new project, import the project as directed assembly
+(file of filenames is named 'fofn'). Be sure to have included the
+provided extension to the GTAGDB file, so that you can switch on
+display of the PAOS, PROS and PIOS tags
+
+The type of tag depends on the strain sequences that went into that sequence

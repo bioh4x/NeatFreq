@@ -1,0 +1,251 @@
+LOCUS       NC_000913            5040 bp       DNA     linear   BCT 17-MAY-2008
+DEFINITION  Escherichia coli str. K-12 substr. MG1655, first 5040 bp
+ACCESSION   NC_000913
+VERSION     NC_000913.2  GI:49175990
+PROJECT     GenomeProject:225
+KEYWORDS    .
+SOURCE      Escherichia coli str. K12 substr. MG1655
+  ORGANISM  Escherichia coli str. K12 substr. MG1655
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacteriales;
+            Enterobacteriaceae; Escherichia.
+COMMENT     First 5040 from NC_000913.2
+FEATURES             Location/Qualifiers
+     source          1..5040
+                     /organism="Escherichia coli str. K12 substr. MG1655"
+                     /mol_type="genomic DNA"
+                     /strain="K-12"
+                     /sub_strain="MG1655"
+                     /db_xref="taxon:511145"
+     gene            190..255
+                     /gene="thrL"
+                     /locus_tag="b0001"
+                     /synonym="ECK0001, JW4367"
+                     /db_xref="ECOCYC:EG11277"
+                     /db_xref="EcoGene:EG11277"
+                     /db_xref="GeneID:944742"
+     CDS             190..255
+                     /gene="thrL"
+                     /locus_tag="b0001"
+                     /function="leader; Amino acid biosynthesis: Threonine"
+                     /function="1.5.1.8 metabolism; building block
+                     biosynthesis; amino acids; threonine"
+                     /GO_process="threonine biosynthetic process"
+                     /codon_start=1
+                     /transl_table=11
+                     /product="thr operon leader peptide"
+                     /protein_id="NP_414542.1"
+                     /db_xref="GI:16127995"
+                     /db_xref="ASAP:ABE-0000006"
+                     /db_xref="UniProtKB/Swiss-Prot:P0AD86"
+                     /db_xref="ECOCYC:EG11277"
+                     /db_xref="EcoGene:EG11277"
+                     /db_xref="GeneID:944742"
+                     /translation="MKRISTTITTTITITTGNGAG"
+     gene            337..2799
+                     /gene="thrA"
+                     /locus_tag="b0002"
+                     /synonym="ECK0002, thrD, JW0001, Hs, thrA2, thrA1"
+                     /db_xref="ECOCYC:EG10998"
+                     /db_xref="EcoGene:EG10998"
+                     /db_xref="GeneID:945803"
+     CDS             337..2799
+                     /gene="thrA"
+                     /locus_tag="b0002"
+                     /EC_number="2.7.2.4"
+                     /EC_number="1.1.1.3"
+                     /function="enzyme; Amino acid biosynthesis: Threonine"
+                     /function="1.5.1.8 metabolism; building block
+                     biosynthesis; amino acids; threonine"
+                     /function="1.5.1.21 metabolism; building block
+                     biosynthesis; amino acids; homoserine"
+                     /function="7.1 location of gene products; cytoplasm"
+                     /experiment="N-terminus verified by Edman degradation:
+                     PMID 354697,4562989"
+                     /GO_component="cytoplasm"
+                     /GO_process="homoserine biosynthetic process; methionine
+                     biosynthetic process; threonine biosynthetic process"
+                     /note="bifunctional: aspartokinase I (N-terminal);
+                     homoserine dehydrogenase I (C-terminal)"
+                     /codon_start=1
+                     /transl_table=11
+                     /product="fused aspartokinase I and homoserine
+                     dehydrogenase I"
+                     /protein_id="NP_414543.1"
+                     /db_xref="GI:16127996"
+                     /db_xref="ASAP:ABE-0000008"
+                     /db_xref="UniProtKB/Swiss-Prot:P00561"
+                     /db_xref="ECOCYC:EG10998"
+                     /db_xref="EcoGene:EG10998"
+                     /db_xref="GeneID:945803"
+                     /translation="MRVLKFGGTSVANAERFLRVADILESNARQGQVATVLSAPAKIT
+                     NHLVAMIEKTISGQDALPNISDAERIFAELLTGLAAAQPGFPLAQLKTFVDQEFAQIK
+                     HVLHGISLLGQCPDSINAALICRGEKMSIAIMAGVLEARGHNVTVIDPVEKLLAVGHY
+                     LESTVDIAESTRRIAASRIPADHMVLMAGFTAGNEKGELVVLGRNGSDYSAAVLAACL
+                     RADCCEIWTDVDGVYTCDPRQVPDARLLKSMSYQEAMELSYFGAKVLHPRTITPIAQF
+                     QIPCLIKNTGNPQAPGTLIGASRDEDELPVKGISNLNNMAMFSVSGPGMKGMVGMAAR
+                     VFAAMSRARISVVLITQSSSEYSISFCVPQSDCVRAERAMQEEFYLELKEGLLEPLAV
+                     TERLAIISVVGDGMRTLRGISAKFFAALARANINIVAIAQGSSERSISVVVNNDDATT
+                     GVRVTHQMLFNTDQVIEVFVIGVGGVGGALLEQLKRQQSWLKNKHIDLRVCGVANSKA
+                     LLTNVHGLNLENWQEELAQAKEPFNLGRLIRLVKEYHLLNPVIVDCTSSQAVADQYAD
+                     FLREGFHVVTPNKKANTSSMDYYHQLRYAAEKSRRKFLYDTNVGAGLPVIENLQNLLN
+                     AGDELMKFSGILSGSLSYIFGKLDEGMSFSEATTLAREMGYTEPDPRDDLSGMDVARK
+                     LLILARETGRELELADIEIEPVLPAEFNAEGDVAAFMANLSQLDDLFAARVAKARDEG
+                     KVLRYVGNIDEDGVCRVKIAEVDGNDPLFKVKNGENALAFYSHYYQPLPLVLRGYGAG
+                     NDVTAAGVFADLLRTLSWKLGV"
+     gene            2801..3733
+                     /gene="thrB"
+                     /locus_tag="b0003"
+                     /synonym="ECK0003, JW0002"
+                     /db_xref="ECOCYC:EG10999"
+                     /db_xref="EcoGene:EG10999"
+                     /db_xref="GeneID:947498"
+     CDS             2801..3733
+                     /gene="thrB"
+                     /locus_tag="b0003"
+                     /EC_number="2.7.1.39"
+                     /function="enzyme; Amino acid biosynthesis: Threonine"
+                     /function="1.5.1.8 metabolism; building block
+                     biosynthesis; amino acids; threonine"
+                     /function="7.1 location of gene products; cytoplasm"
+                     /GO_component="cytoplasm"
+                     /GO_process="threonine biosynthetic process"
+                     /codon_start=1
+                     /transl_table=11
+                     /product="homoserine kinase"
+                     /protein_id="NP_414544.1"
+                     /db_xref="GI:16127997"
+                     /db_xref="ASAP:ABE-0000010"
+                     /db_xref="UniProtKB/Swiss-Prot:P00547"
+                     /db_xref="ECOCYC:EG10999"
+                     /db_xref="EcoGene:EG10999"
+                     /db_xref="GeneID:947498"
+                     /translation="MVKVYAPASSANMSVGFDVLGAAVTPVDGALLGDVVTVEAAETF
+                     SLNNLGRFADKLPSEPRENIVYQCWERFCQELGKQIPVAMTLEKNMPIGSGLGSSACS
+                     VVAALMAMNEHCGKPLNDTRLLALMGELEGRISGSIHYDNVAPCFLGGMQLMIEENDI
+                     ISQQVPGFDEWLWVLAYPGIKVSTAEARAILPAQYRRQDCIAHGRHLAGFIHACYSRQ
+                     PELAAKLMKDVIAEPYRERLLPGFRQARQAVAEIGAVASGISGSGPTLFALCDKPETA
+                     QRVADWLGKNYLQNQEGFVHICRLDTAGARVLEN"
+     gene            3734..5020
+                     /gene="thrC"
+                     /locus_tag="b0004"
+                     /synonym="ECK0004, JW0003"
+                     /db_xref="ECOCYC:EG11000"
+                     /db_xref="EcoGene:EG11000"
+                     /db_xref="GeneID:945198"
+     CDS             3734..5020
+                     /gene="thrC"
+                     /locus_tag="b0004"
+                     /EC_number="4.2.3.1"
+                     /function="enzyme; Amino acid biosynthesis: Threonine"
+                     /function="1.5.1.8 metabolism; building block
+                     biosynthesis; amino acids; threonine"
+                     /function="7.1 location of gene products; cytoplasm"
+                     /experiment="N-terminus verified by Edman degradation:
+                     PMID 9298646,9600841,9740056"
+                     /GO_component="cytoplasm"
+                     /GO_process="threonine biosynthetic process"
+                     /codon_start=1
+                     /transl_table=11
+                     /product="threonine synthase"
+                     /protein_id="NP_414545.1"
+                     /db_xref="GI:16127998"
+                     /db_xref="ASAP:ABE-0000012"
+                     /db_xref="UniProtKB/Swiss-Prot:P00934"
+                     /db_xref="ECOCYC:EG11000"
+                     /db_xref="EcoGene:EG11000"
+                     /db_xref="GeneID:945198"
+                     /translation="MKLYNLKDHNEQVSFAQAVTQGLGKNQGLFFPHDLPEFSLTEID
+                     EMLKLDFVTRSAKILSAFIGDEIPQEILEERVRAAFAFPAPVANVESDVGCLELFHGP
+                     TLAFKDFGGRFMAQMLTHIAGDKPVTILTATSGDTGAAVAHAFYGLPNVKVVILYPRG
+                     KISPLQEKLFCTLGGNIETVAIDGDFDACQALVKQAFDDEELKVALGLNSANSINISR
+                     LLAQICYYFEAVAQLPQETRNQLVVSVPSGNFGDLTAGLLAKSLGLPVKRFIAATNVN
+                     DTVPRFLHDGQWSPKATQATLSNAMDVSQPNNWPRVEELFRRKIWQLKELGYAAVDDE
+                     TTQQTMRELKELGYTSEPHAAVAYRALRDQLNPGEYGLFLGTAHPAKFKESVEAILGE
+                     TLDLPKELAERADLPLLSHNLPADFAALRKLMMNHQ"
+ORIGIN      
+        1 agcttttcat tctgactgca acgggcaata tgtctctgtg tggattaaaa aaagagtgtc
+       61 tgatagcagc ttctgaactg gttacctgcc gtgagtaaat taaaatttta ttgacttagg
+      121 tcactaaata ctttaaccaa tataggcata gcgcacagac agataaaaat tacagagtac
+      181 acaacatcca tgaaacgcat tagcaccacc attaccacca ccatcaccat taccacaggt
+      241 aacggtgcgg gctgacgcgt acaggaaaca cagaaaaaag cccgcacctg acagtgcggg
+      301 cttttttttt cgaccaaagg taacgaggta acaaccatgc gagtgttgaa gttcggcggt
+      361 acatcagtgg caaatgcaga acgttttctg cgtgttgccg atattctgga aagcaatgcc
+      421 aggcaggggc aggtggccac cgtcctctct gcccccgcca aaatcaccaa ccacctggtg
+      481 gcgatgattg aaaaaaccat tagcggccag gatgctttac ccaatatcag cgatgccgaa
+      541 cgtatttttg ccgaactttt gacgggactc gccgccgccc agccggggtt cccgctggcg
+      601 caattgaaaa ctttcgtcga tcaggaattt gcccaaataa aacatgtcct gcatggcatt
+      661 agtttgttgg ggcagtgccc ggatagcatc aacgctgcgc tgatttgccg tggcgagaaa
+      721 atgtcgatcg ccattatggc cggcgtatta gaagcgcgcg gtcacaacgt tactgttatc
+      781 gatccggtcg aaaaactgct ggcagtgggg cattacctcg aatctaccgt cgatattgct
+      841 gagtccaccc gccgtattgc ggcaagccgc attccggctg atcacatggt gctgatggca
+      901 ggtttcaccg ccggtaatga aaaaggcgaa ctggtggtgc ttggacgcaa cggttccgac
+      961 tactctgctg cggtgctggc tgcctgttta cgcgccgatt gttgcgagat ttggacggac
+     1021 gttgacgggg tctatacctg cgacccgcgt caggtgcccg atgcgaggtt gttgaagtcg
+     1081 atgtcctacc aggaagcgat ggagctttcc tacttcggcg ctaaagttct tcacccccgc
+     1141 accattaccc ccatcgccca gttccagatc ccttgcctga ttaaaaatac cggaaatcct
+     1201 caagcaccag gtacgctcat tggtgccagc cgtgatgaag acgaattacc ggtcaagggc
+     1261 atttccaatc tgaataacat ggcaatgttc agcgtttctg gtccggggat gaaagggatg
+     1321 gtcggcatgg cggcgcgcgt ctttgcagcg atgtcacgcg cccgtatttc cgtggtgctg
+     1381 attacgcaat catcttccga atacagcatc agtttctgcg ttccacaaag cgactgtgtg
+     1441 cgagctgaac gggcaatgca ggaagagttc tacctggaac tgaaagaagg cttactggag
+     1501 ccgctggcag tgacggaacg gctggccatt atctcggtgg taggtgatgg tatgcgcacc
+     1561 ttgcgtggga tctcggcgaa attctttgcc gcactggccc gcgccaatat caacattgtc
+     1621 gccattgctc agggatcttc tgaacgctca atctctgtcg tggtaaataa cgatgatgcg
+     1681 accactggcg tgcgcgttac tcatcagatg ctgttcaata ccgatcaggt tatcgaagtg
+     1741 tttgtgattg gcgtcggtgg cgttggcggt gcgctgctgg agcaactgaa gcgtcagcaa
+     1801 agctggctga agaataaaca tatcgactta cgtgtctgcg gtgttgccaa ctcgaaggct
+     1861 ctgctcacca atgtacatgg ccttaatctg gaaaactggc aggaagaact ggcgcaagcc
+     1921 aaagagccgt ttaatctcgg gcgcttaatt cgcctcgtga aagaatatca tctgctgaac
+     1981 ccggtcattg ttgactgcac ttccagccag gcagtggcgg atcaatatgc cgacttcctg
+     2041 cgcgaaggtt tccacgttgt cacgccgaac aaaaaggcca acacctcgtc gatggattac
+     2101 taccatcagt tgcgttatgc ggcggaaaaa tcgcggcgta aattcctcta tgacaccaac
+     2161 gttggggctg gattaccggt tattgagaac ctgcaaaatc tgctcaatgc aggtgatgaa
+     2221 ttgatgaagt tctccggcat tctttctggt tcgctttctt atatcttcgg caagttagac
+     2281 gaaggcatga gtttctccga ggcgaccacg ctggcgcggg aaatgggtta taccgaaccg
+     2341 gacccgcgag atgatctttc tggtatggat gtggcgcgta aactattgat tctcgctcgt
+     2401 gaaacgggac gtgaactgga gctggcggat attgaaattg aacctgtgct gcccgcagag
+     2461 tttaacgccg agggtgatgt tgccgctttt atggcgaatc tgtcacaact cgacgatctc
+     2521 tttgccgcgc gcgtggcgaa ggcccgtgat gaaggaaaag ttttgcgcta tgttggcaat
+     2581 attgatgaag atggcgtctg ccgcgtgaag attgccgaag tggatggtaa tgatccgctg
+     2641 ttcaaagtga aaaatggcga aaacgccctg gccttctata gccactatta tcagccgctg
+     2701 ccgttggtac tgcgcggata tggtgcgggc aatgacgtta cagctgccgg tgtctttgct
+     2761 gatctgctac gtaccctctc atggaagtta ggagtctgac atggttaaag tttatgcccc
+     2821 ggcttccagt gccaatatga gcgtcgggtt tgatgtgctc ggggcggcgg tgacacctgt
+     2881 tgatggtgca ttgctcggag atgtagtcac ggttgaggcg gcagagacat tcagtctcaa
+     2941 caacctcgga cgctttgccg ataagctgcc gtcagaacca cgggaaaata tcgtttatca
+     3001 gtgctgggag cgtttttgcc aggaactggg taagcaaatt ccagtggcga tgaccctgga
+     3061 aaagaatatg ccgatcggtt cgggcttagg ctccagtgcc tgttcggtgg tcgcggcgct
+     3121 gatggcgatg aatgaacact gcggcaagcc gcttaatgac actcgtttgc tggctttgat
+     3181 gggcgagctg gaaggccgta tctccggcag cattcattac gacaacgtgg caccgtgttt
+     3241 tctcggtggt atgcagttga tgatcgaaga aaacgacatc atcagccagc aagtgccagg
+     3301 gtttgatgag tggctgtggg tgctggcgta tccggggatt aaagtctcga cggcagaagc
+     3361 cagggctatt ttaccggcgc agtatcgccg ccaggattgc attgcgcacg ggcgacatct
+     3421 ggcaggcttc attcacgcct gctattcccg tcagcctgag cttgccgcga agctgatgaa
+     3481 agatgttatc gctgaaccct accgtgaacg gttactgcca ggcttccggc aggcgcggca
+     3541 ggcggtcgcg gaaatcggcg cggtagcgag cggtatctcc ggctccggcc cgaccttgtt
+     3601 cgctctgtgt gacaagccgg aaaccgccca gcgcgttgcc gactggttgg gtaagaacta
+     3661 cctgcaaaat caggaaggtt ttgttcatat ttgccggctg gatacggcgg gcgcacgagt
+     3721 actggaaaac taaatgaaac tctacaatct gaaagatcac aacgagcagg tcagctttgc
+     3781 gcaagccgta acccaggggt tgggcaaaaa tcaggggctg ttttttccgc acgacctgcc
+     3841 ggaattcagc ctgactgaaa ttgatgagat gctgaagctg gattttgtca cccgcagtgc
+     3901 gaagatcctc tcggcgttta ttggtgatga aatcccacag gaaatcctgg aagagcgcgt
+     3961 gcgcgcggcg tttgccttcc cggctccggt cgccaatgtt gaaagcgatg tcggttgtct
+     4021 ggaattgttc cacgggccaa cgctggcatt taaagatttc ggcggtcgct ttatggcaca
+     4081 aatgctgacc catattgcgg gtgataagcc agtgaccatt ctgaccgcga cctccggtga
+     4141 taccggagcg gcagtggctc atgctttcta cggtttaccg aatgtgaaag tggttatcct
+     4201 ctatccacga ggcaaaatca gtccactgca agaaaaactg ttctgtacat tgggcggcaa
+     4261 tatcgaaact gttgccatcg acggcgattt cgatgcctgt caggcgctgg tgaagcaggc
+     4321 gtttgatgat gaagaactga aagtggcgct agggttaaac tcggctaact cgattaacat
+     4381 cagccgtttg ctggcgcaga tttgctacta ctttgaagct gttgcgcagc tgccgcagga
+     4441 gacgcgcaac cagctggttg tctcggtgcc aagcggaaac ttcggcgatt tgacggcggg
+     4501 tctgctggcg aagtcactcg gtctgccggt gaaacgtttt attgctgcga ccaacgtgaa
+     4561 cgataccgtg ccacgtttcc tgcacgacgg tcagtggtca cccaaagcga ctcaggcgac
+     4621 gttatccaac gcgatggacg tgagtcagcc gaacaactgg ccgcgtgtgg aagagttgtt
+     4681 ccgccgcaaa atctggcaac tgaaagagct gggttatgca gccgtggatg atgaaaccac
+     4741 gcaacagaca atgcgtgagt taaaagaact gggctacact tcggagccgc acgctgccgt
+     4801 agcttatcgt gcgctgcgtg atcagttgaa tccaggcgaa tatggcttgt tcctcggcac
+     4861 cgcgcatccg gcgaaattta aagagagcgt ggaagcgatt ctcggtgaaa cgttggatct
+     4921 gccaaaagag ctggcagaac gtgctgattt acccttgctt tcacataatc tgcccgccga
+     4981 ttttgctgcg ttgcgtaaat tgatgatgaa tcatcagtaa aatctattca ttatctcaat
+//
+

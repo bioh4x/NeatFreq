@@ -1,0 +1,219 @@
+#!/usr/local/bin/perl
+# $Header: /usr/local/src/cvsroot/SE/DSScripts/src/extractFasta,v 1.3 2005/07/20 17:59:08 hkoo Exp $
+#
+# extractFasta - Takes in a fasta file and splits it into subfiles based on 
+# input max number of records per file, size, etc.
+# 
+##############################################################################
+
+use strict;
+use IO::File;
+use TIGR::Foundation;
+use lib '/usr/local/devel/BCIS/assembly/tools';
+use TIGR::ParseFasta;
+
+my $FASTA_EXT = ".fasta";
+my $tf = new TIGR::Foundation;
+my $program = $tf->getProgramInfo('name');
+my $input_fasta;
+my $minsize;
+my $maxsize;
+my $totsize = 9999999999999999999999;
+my $split;
+my $maxcount = 99999999999999;  # by default, create only one subfile
+my $listflag;
+my $idlist;
+my $excfile;
+my $outpfx = "tmp";
+chomp(my $outdir = `pwd`);
+my $version = "0.2 Revision " . (qw/$Revision: 1.3 $/)[1];
+my $logfile = "./" . $program . ".log";
+my $usage = qq~
+  $program extracts an input fasta file into subfiles based on counts, 
+  size, or include/exclude inputs.
+    
+  usage: 
+    $program -i <fastafile> [options]
+    
+  options:
+    -minsize    extract fasta records whose size is > this many characters
+    -maxsize    extract fasta records whose size is < this many characters
+    -totsize    extract fasta records into subsets whose total size < this
+                many characters
+    -split      split all extracted files as individual fasta files 
+                (instead of groups; disables -maxcount option)
+
+    -maxcount   extract fasta records into subfiles containing a max of 
+                this many records
+    -idlist     supply file of identifiers to include in fastafile
+    -o          output prefix for subfiles [default: fastafile_[N].fasta]
+    -O          output directory [default: current dir];
+    -logfile    logs get written here [default: $logfile]
+    -X          Supply a list file of identifiers to delete from fastafile
+~;
+$tf->setHelpInfo($usage);
+$tf->setVersionInfo($version);
+
+my $options = $tf->TIGR_GetOptions
+    ("i=s",        \$input_fasta,
+     "minsize=i",  \$minsize,
+     "maxsize=i",  \$maxsize,
+     "totsize=i",  \$totsize,
+     "split",      \$split,
+     "maxcount=i", \$maxcount,
+     "o=s",        \$outpfx,
+     "O=s",        \$outdir,
+     "idlist=s",   \$idlist,
+     "list",       \$listflag,
+     "logfile=s",  \$logfile,
+     "X=s",        \$excfile);
+
+$tf->bail("Error parsing options") unless $options;
+$tf->bail("Supply -i inputfasta file") unless defined $input_fasta;
+$tf->bail("Set -minsize or -maxsize, not both")
+    if defined $minsize && defined $maxsize;
+$tf->setDebugLevel(0) unless $tf->getDebugLevel();
+$tf->setLogFile($logfile);
+
+my %list;
+if (defined $idlist) {
+    open(LIST,$idlist) || $tf->bail("Cannot read $idlist $!");
+    while(<LIST>) {
+	chomp;
+	s/^\s+//;
+	s/\s+$//;
+	$list{$_} = 1;
+    }
+    close LIST || $tf->bail("Cannot close $idlist $!");
+}
+my %exc;
+if (defined $excfile) {
+    open(EXC,$excfile) || $tf->bail("Cannot read excfile '$excfile' $!");
+    while(<EXC>) {
+	chomp;
+	s/^\s+//;
+	s/\s+$//;
+	next unless /\S+/;
+	$exc{$_} = 1;
+    }
+    close EXC || $tf->bail("Cannot close excfile '$excfile' $!");
+}
+
+my $fa = new IO::File($input_fasta);
+$tf->bail("Error reading $input_fasta $!") unless defined $fa;
+
+my $parser = new ParseFasta($fa);
+if (! defined $parser){
+   $tf->bail("Cannot create a parser\n");
+}
+
+my $facount = 0;
+my $filecount = 1;
+my $outfh;
+my $total_size = 0;
+
+if (defined $listflag) {
+    my $listfile = "$outdir/$outpfx.list";
+    open(LIST,">$listfile") || $tf->bail("Cannot create $listfile $!");
+}
+
+if (!defined $split) {
+    $outfh = &newfile();
+}
+
+while (my ($head, $data) = $parser->getRecord()){
+    my $datalen = length($data);
+    my @cols = split /\s+/, $head;
+    my $id = $cols[0];
+    
+    if ($datalen == 0) {
+	# no data!
+	$tf->logError("Identifier '$id' has no data!  skipping...");
+	next;
+    }
+
+    if (defined $idlist && !defined($list{$id})) {
+	next;
+    }
+
+    if (defined $exc{$id}) {
+	$tf->logLocal("Identifier '$id' flagged for exclusion, skipping...",0);
+	next;
+    }
+
+    if (defined $minsize && $datalen < $minsize) {
+	# want contigs larger than minsize, skip this one
+	$tf->logLocal("Skipping record $head length $datalen: too small",2);
+	next;
+    }
+    if (defined $maxsize && $datalen > $maxsize) {
+	# want contigs smaller than maxsize, skip this one
+	$tf->logLocal("Skipping record $head length $datalen: too large",2);
+	next;
+    }
+
+    my $a = $total_size + $datalen;
+
+    if (defined $split) {
+	my $id = $1 if $head =~ /^(\S+)\s.*/;
+	my $filename = $outdir . "/" . $id . $FASTA_EXT;
+	$outfh = &newfile($filename);
+	$outfh->print(&data2fasta($head,$data));
+	next;
+    }
+
+    #print "$total_size + $datalen = $a vs $totsize\n";
+    if ($total_size + $datalen > $totsize) {
+	print "doing new file!\n";
+	$outfh = &newfile();
+	$facount = 0;
+	$total_size = 0;
+    }
+    
+    if ($facount >= $maxcount) {
+	#print "doing new file!\n";
+	$outfh = &newfile();
+	$facount = 0;
+	$total_size = 0;
+    }
+    $total_size += $datalen;
+    $outfh->print(&data2fasta($head,$data));
+    $facount++;
+}
+
+if (defined $listflag) {
+    close LIST;
+}
+
+$fa->close;
+exit(0);
+
+sub newfile($) {
+    my $filename = shift;
+    $outfh->close if defined $outfh;
+    
+    if (!defined($filename)) {
+	my $number = $filecount;
+	$filename = $outdir . "/" . $outpfx . "_" . $number . $FASTA_EXT;
+    }
+
+    $outfh = new IO::File (">$filename");
+    $tf->bail("Cannot create $filename $!") unless defined $outfh;
+
+    if (defined $listflag) {
+	print LIST $filename,"\n";
+    }
+
+    $filecount++;
+    return $outfh;
+}
+    
+sub data2fasta($$) {
+    my $header = shift;
+    my $data = shift;
+    my $record = ">$header\n";
+    for (my $i=0; $i<length($data); $i+=60) {
+	$record .= substr($data,$i,60) . "\n";
+    }
+    return $record;
+}

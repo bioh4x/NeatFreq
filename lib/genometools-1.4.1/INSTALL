@@ -1,0 +1,119 @@
+Building GenomeTools
+--------------------
+
+Invoke GNU make, e.g.:
+
+$ make [argument ...]
+
+to build GenomeTools. You need at least version 3.80 of GNU make, you can check
+which version you have by invoking
+
+$ make --version
+
+On *BSD GNU make is often called ``gmake''.
+
+Possible arguments:
+
+- 64bit=yes to compile a 64-bit version (not available on all platforms)
+- opt=no to disable optimization
+- assert=no to disable assertions
+- amalgamation=yes to compile as an amalgamation
+
+Example call to build GenomeTools without assertions on a system where GNU make
+is called ``gmake'':
+
+$ gmake assert=no
+
+
+Building GenomeTools without the curses library:
+------------------------------------------------
+
+On systems without an installed curses library invoke make as above with the
+argument curses=no
+
+If you invoked make without curses=no beforehand, do not forget to run `make
+clean` before running `make curses=no`.
+
+
+Building GenomeTools without the sketch tool (if Cairo is not installed):
+-------------------------------------------------------------------------
+
+invoke make as above with the argument cairo=no
+
+
+Building GenomeTools with HMMER:
+--------------------------------
+
+To enable protein domain search functionality in the ltrdigest tool please also
+append the with-hmmer=yes option to the make call. This option will make sure
+that a HMMER source package is downloaded and compiled along with the gt binary.
+Note that the wget executable must be available in the current PATH to do so
+(alternatively, you can download HMMER 2.3.2 manually from
+ftp://selab.janelia.org/pub/software/hmmer/CURRENT/ and untar it in the
+src/external/ subdirectory).
+
+$ make with-hmmer=yes
+
+
+Building GenomeTools as a Universal Binary (on Mac OS X < v10.6):
+-----------------------------------------------------------------
+
+Invoke make as above with the argument universal=yes.
+Note that on later Mac OS X systems (those with an Intel CPU) the universal=yes
+option is not required. Also, do not use it on Mac OS X 10.6 (Snow Leopard) or
+later as PowerPC support has since been discontinued. Thus trying to build a
+universal binary may lead to problems.
+
+
+Building GenomeTools on Windows (using Cygwin):
+-----------------------------------------------
+
+Building GenomeTools with gcc on Windows occasionally results a warning
+regarding the '-fPIC' parameter. This can be ignored without problems.
+To ignore this warning, please append the errorcheck=no option to your
+make call. All other options given in this file can still be used.
+
+
+Testing GenomeTools (optional)
+------------------------------
+
+Call
+
+$ make test
+
+to make sure your GenomeTools build went fine.
+This step requires an installed Ruby interpreter (see
+http://www.ruby-lang.org/en/ for informations on Ruby).
+
+
+Installing GenomeTools
+----------------------
+
+To install the ``gt'' binary and the ``libgenometools'' library
+(plus header files) on your system invoke
+
+$ make install
+
+Per default the files are installed under /usr/local
+You can change this with the prefix argument. For example, to install under
+/usr invoke
+
+# make prefix=/usr install
+
+Please note that all make options given during the compilation must be
+given in the `make install' invocation again. For example, if you compiled
+GenomeTools with the '64bit=yes cairo=no' options, the correct installation
+command would be:
+
+# make prefix=/usr 64bit=yes cairo=no install
+
+Omitting these options may lead to problems during installation.
+
+
+Final note
+-----------
+
+Please look at http://genometools.org for updates and report bugs if you
+encounter any.
+
+Enjoy!

@@ -1,0 +1,115 @@
+This demo demonstrates the usage of 
+
+    uncover_at
+    miraEST
+
+to perform an EST assembly and SNP analysis. 
+
+It also shows how to change the default behaviour of miraEST for a given step
+via the parameter file: by default, miraEST does not write HTML files for
+result. This is changed in the parameter file step3_in.par
+
+To run the demo, just execute 'runme.sh'.
+
+Once finished, to examine the detected SNPs, you can look at the html file
+'step3_out.html' using a CSS compliant browser. You can also use the
+gap4 program: change into the 'step3_out.gap4da' directory, start
+gap4, make a new project, import the project as directed assembly
+(file of filenames is named 'fofn'). Be sure to have included the
+provided extension to the GTAGDB file, so that you can switch on
+display of the PAOS, PROS and PIOS tags (PROS and PIOS not present in
+this project as there is no strain informations available).
+
+Below is a quick overview on what 'uncover_at' does.
+
+---------------------------------------------------------
+
+The sequences I provided for triphysaria versicolor were only roughly
+preprocessed (mask of sequencing vector and poly-A / poly-T), i.e.,
+there are still a lot of annoyances present. E.g.: the sequences
+
+>gnlti136477499
+GAXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXTTCGAGCGGCCGCCCG
+GGCAGGTTCACGAGGTCCAAATGAGTTAGCAGGCCTTTAAAAGATTTTCCAGCATCAACT
+TCAAATGTGCCTTGATCAGCGGAAAATTCCTTGTTCCCATAGGAATTTTCATTGCGGGAT
+GAATCCCTGTAGGACCCACCACCAGCACCACGATCACGGCCATATCCATAACCAANGCCT
+CCACGACCACCACCTCTAGCTGAGTCAGATTTGCTCTCCTTGACAGCCTGAGTTGGGGGT
+GTAGGCTTGGAAGGAAACTTAGACTGAGCCGNCGGCTTGGATCCTCCAGTCACCGCCTTA
+GACGATGGTGCCACGGCTTTCTTTGGGTCGATCTTCAACTGCTGAGCAGCAATCAGCAGT
+GAAGGGCTCCTCTGCATCATCGTCTTCGAGCAAATCGAAAGGGATAGTTGTCGCCATATA
+TCAACACAGAACCTCGXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXCCCGAACGATTGCC
+TTTCCAACAGTGGGCAGCGTAATGGGGAAGGACGGCCTGTTAGGGGCATTAAGCGGGGGG
+GTGTGTGGTTAGCGAGGTACCGGTTCTTGCCAGCCCTAGGCCGTTTCTTCTTTTTCTTTC
+TTTTTCCAGTTGCCGGTTCCGCGAGCTTAATTGGGGCCCTTGTGGTCGATTGGTTTTGGC
+C
+
+has junk befor and after the correctly masked sequencing vector (due
+to bad quality).
+
+The      uncover_at      program is of two-fold utility: it will
+uncover parts of the polybase stretches (I'll come back to this in a
+minute) and it can clean sequences that present the problem
+above. After running, the same sequence will look like this:
+
+>gnlti136477499
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXTTCGAGCGGCCGCCCG
+GGCAGGTTCACGAGGTCCAAATGAGTTAGCAGGCCTTTAAAAGATTTTCCAGCATCAACT
+TCAAATGTGCCTTGATCAGCGGAAAATTCCTTGTTCCCATAGGAATTTTCATTGCGGGAT
+GAATCCCTGTAGGACCCACCACCAGCACCACGATCACGGCCATATCCATAACCAANGCCT
+CCACGACCACCACCTCTAGCTGAGTCAGATTTGCTCTCCTTGACAGCCTGAGTTGGGGGT
+GTAGGCTTGGAAGGAAACTTAGACTGAGCCGNCGGCTTGGATCCTCCAGTCACCGCCTTA
+GACGATGGTGCCACGGCTTTCTTTGGGTCGATCTTCAACTGCTGAGCAGCAATCAGCAGT
+GAAGGGCTCCTCTGCATCATCGTCTTCGAGCAAATCGAAAGGGATAGTTGTCGCCATATA
+TCAACACAGAACCTCGXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+X
+
+Note: miraEST also has this functionality internally, one doesn't need
+to do it first. But it's a nifty function for if you want to use the
+sequences for other purposes.
+
+The most important function of      uncover_at     is to uncover a few
+bases of a polybase A/T stretch in masked sequences so that it can
+serve as visual anchor when people look at the assembly
+afterwards. Have a look at this sequence:
+
+>gnlti136477495 N11I-A10.scf
+TCGAGCTGGATCCACTAGTACGGCCGCCAGTGTGCTGGAATTCGGCTTAGCGTGGTCGCG
+GCCGAGGTACAAGCTTTTTTTTTTTTTTTTTTTTTTTTTTTTCTCAATTCATATTTATAA
+ATGTATTTGCATCGATATTCCACGATATACAATTATACAAACAGTTCCCATCATCCTCAA
+...
+
+Once you have run any program that masks poly-A / poly-T stretches in
+sequences, you get about this:
+
+>gnlti136477495
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXCTCAATTCATATTTATAA
+ATGTATTTGCATCGATATTCCACGATATACAATTATACAAACAGTTCCCATCATCCTCAA
+...
+
+Now, after running    uncover_at    with standard uncover/recover
+parameters, you will get this:
+
+>gnlti136477495
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxTTTTTTTCTCAATTCATATTTATAA
+ATGTATTTGCATCGATATTCCACGATATACAATTATACAAACAGTTCCCATCATCCTCAA
+
+Once the sequences are assembled with miraEST, you can look at the
+assemblies and immediately see the direction of your protein or spot
+splice variants that are a subset of another gene transcript.
+
+Note: miraEST    knows about possibly uncovered stretches and will
+      handle them accordingly.
+Note: You don't need to uncover poly-A / poly-T stretches to run
+      miraEST    , it is just a nice tool you might need for other
+      projects.

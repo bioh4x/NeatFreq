@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>GenomeTools</title>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<meta name="description" content="The GenomeTools genome analysis system is a free collection of bioinformatics tools (in the realm of genome informatics) combined into a single binary.">
+<meta name="keywords" content="genome analysis, GFF3, genome annotation,
+annotation drawing, AnnotationSketch, LTR prediction, bioinformatics, computational biology">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <div id="menu">
+    <ul>
+      <li><a id="current" href="index.html">Overview</a></li>
+      <li><a href="pub/">Download</a></li>
+      <li><a href="cgi-bin/gitweb.cgi?p=genometools.git;a=summary">Browse source</a></li>
+      <li><a href="mailman/listinfo/gt-users">Mailing list</a></li>
+      <li><a href="http://genometools.lighthouseapp.com/">Issue tracker</a></li>
+      <li><a href="design.html">Design</a></li>
+      <li><a href="libgenometools.html">C API</a></li>
+      <li><a href="docs.html"><tt>gtscript</tt> docs</a></li>
+      <li><a href="annotationsketch.html"><tt>AnnotationSketch</tt></a></li>
+      <li><a href="/cgi-bin/gff3validator.cgi">GFF3 validator</a></li>
+      <li><a href="license.html">License</a></li>
+    </ul>
+  </div>
+  <div id="main">
+    <h1><i>GenomeTools</i></h1>
+    <h3>The versatile open source genome analysis software</h3>
+    <p id="examplesketch" >
+      <a href="annotationsketch.html">
+        <img src="images/annotation.png" alt="[Genome Annotation]">
+      </a>
+    </p>
+    <p>
+    The <i>GenomeTools</i> genome analysis system is a <a
+    href="license.html">free</a> collection of bioinformatics tools (in the realm of
+    genome informatics) combined into a single binary named <tt>gt</tt>.
+    It is based on a C library named &ldquo;libgenometools&rdquo; which consists of
+    several modules.
+    </p>
+    <p>
+    If you are interested in gene prediction, have a look at
+    <a href="http://genomethreader.org" title="GenomeThreader gene prediction
+      software"><i>GenomeThreader</i></a>.
+    </p>
+    <h2>Platforms</h2>
+    <p>
+    <i>GenomeTools</i> has been designed to run on every
+    <a href="http://en.wikipedia.org/wiki/POSIX">POSIX</a> compliant
+    <a href="http://en.wikipedia.org/wiki/UNIX">UNIX</a> system. For example, Linux,
+    Mac OS X, and OpenBSD. A <a href="pub/binary_distributions">Windows version</a> which
+    requires a <a href="http://www.cygwin.com/">Cygwin</a> installation
+    is available. Please report problems with it to our
+    <a href="mailman/listinfo/gt-users">mailing list</a>.
+    </p>
+    <p>
+    <h2>Published software in <em>GenomeTools</em></h2>
+    <p>
+    The <em>GenomeTools</em> distribution includes several published software
+    tools:
+    </p>
+    <ul class="pubs">
+      <li><tt><a href="http://www.zbh.uni-hamburg.de/LTRharvest">ltrharvest</a></tt>, an efficient and flexible software tool for
+      <em>de novo</em> detection of LTR retrotransposons.
+      <div class="ref">
+       D. Ellinghaus, S. Kurtz, and U. Willhoeft.<br>
+       <i>LTRharvest</i>, a efficient and flexible software for <i> de novo </i>
+       detection of LTR retrotransposons. <br>
+       <a href="http://www.biomedcentral.com/1471-2105/9/18/abstract">
+         BMC Bioinformatics 2008, 9:18
+       </a>
+      </div>
+      </li>
+      <li><tt><a href="http://www.zbh.uni-hamburg.de/tallymer">tallymer</a></tt>, a collection of flexible and memory-efficient
+      programs for <em>k</em>-mer counting and indexing of large sequence sets.
+      <div class="ref">
+       S. Kurtz, A. Narechania, J.C. Stein, and D. Ware.<br>
+       A new method to compute K-mer frequencies and its application to annotate
+        large repetitive plant genomes.<br>
+       <a href="http://www.biomedcentral.com/1471-2164/9/517/abstract">
+         BMC Genomics 2008, 9:517
+       </a>
+      </div>
+      </li>
+      <li><tt>uniquesub</tt>, a program for computing minimum unique substrings.
+      <div class="ref">
+       S. Gr&auml;f, F.G.G. Nielsen, S. Kurtz, M.A. Huynen, E. Birney,
+       H. Stunnenberg, and P. Flicek.<br>
+       Optimized design and assessment of whole genome tiling arrays.<br>
+       <a href="http://bioinformatics.oxfordjournals.org/cgi/content/abstract/23/13/i195">
+         Bioinformatics 2007, 23(13):i195&ndash;i204
+       </a>
+      </div>
+      </li>
+      <li><tt>AnnotationSketch</tt>, a library for drawing genome annotations.
+      <div class="ref">
+       S. Steinbiss, G. Gremme, C. Sch&auml;rfer, M. Mader and S. Kurtz.<br>
+       <em>AnnotationSketch</em>: a genome annotation drawing library.<br>
+       <a href="http://bioinformatics.oxfordjournals.org/cgi/content/short/25/4/533">
+         Bioinformatics 2009, 25(4):533&ndash;534
+       </a>
+      </div>
+      </li>
+      <li><tt><a href="http://www.zbh.uni-hamburg.de/LTRdigest">ltrdigest</a></tt>, a software tool for automated annotation of internal features of LTR retrotransposons.
+      <div class="ref">
+       S. Steinbiss, U. Willhoeft, G. Gremme and S. Kurtz.<br>
+       Fine-grained annotation and classification of <em>de novo</em> predicted LTR retrotransposons.<br>
+       <a href="http://nar.oxfordjournals.org/cgi/content/full/37/21/7002">
+         Nucleic Acids Research 2009, 37(21):7002&ndash;7013
+       </a>
+      </div>
+      </li>
+      <li><tt><a href="http://www.zbh.uni-hamburg.de/mgth">MetaGenomeThreader</a></tt>, a software to predict genes, such as PCS's (predicted coding sequences) in sequences of metagenome projects.
+      <div class="ref">
+       D.J. Schmitz-H&uuml;bsch and S. Kurtz.<br>
+       MetaGenomeThreader: A software tool for predicting genes in DNA-sequences of metagenome projects.<br>
+       In R. Daniel and W. Streit (Eds.), <em>Metagenomics. Methods in Molecular Biology</em>, 325&ndash;338, Humana Press, Totowa, NJ, ISBN 978-1-60761-822-5
+      </div>
+      </li>
+      <li><i><a href="http://www.zbh.uni-hamburg.de/encseq">GtEncseq</a></i>, a compressed biosequence representation with many features.
+      <div class="ref">
+       S. Steinbiss and S. Kurtz.<br>
+       A New Efficient Data Structure for Storage and Retrieval of Multiple Biosequences.<br>
+       <a href="http://doi.ieeecomputersociety.org/10.1109/TCBB.2011.146">
+         IEEE/ACM Transactions on Computational Biology and Bioinformatics 2012, 9(2):345&ndash;357
+       </a>
+      </div>
+      </li>
+    </ul>
+    <h2>Contact</h2>
+    <p>
+    The <em>GenomeTools</em> are being developed by: <br />
+    Gordon Gremme, Sascha Steinbiss, Stefan Kurtz and <a href="/cgi-bin/gitweb.cgi?p=genometools.git;a=blob;f=CONTRIBUTORS;hb=HEAD">others</a><br />
+    <a href="http://www.zbh.uni-hamburg.de/research/GI">Genome Informatics Research Group</a><br />
+     <a href="http://www.zbh.uni-hamburg.de">Center for Bioinformatics, University of Hamburg</a>
+    </p>
+<div id="footer">
+Copyright &copy; 2006-2011
+<a href="mailto:gremme@gmail.com">Gordon Gremme.</a> Last update: 2011-11-09
+</div>
+</div>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ?  "https://gremme.org/piwik/" : "http://gremme.org/piwik/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 5);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://gremme.org/piwik/piwik.php?idsite=5" style="border:0" alt="" /></p></noscript>
+<!-- End Piwik Tracking Tag -->
+</body>
+</html>

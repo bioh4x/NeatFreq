@@ -1,0 +1,15 @@
+-fasta 
+
+--job=mapping,genome,accurate,sanger 
+
+-project=cjejuni_demo 
+
+-AS:nop=4
+
+-SB:lsd=yes:bsn=cjejuniNCTC11168:bbq=30:bft=gbf
+
+SANGER_SETTINGS 
+-LR:rns=TIGR 
+-CL:bsqc=yes
+-CO:mgqrt=30
+

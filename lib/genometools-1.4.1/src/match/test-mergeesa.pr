@@ -1,0 +1,11 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
+int gt_performtheindexmerging(const GtStr *storeindex,
+                           const GtStrArray *indexnametab,
+                           GtLogger *logger,
+                           GtError *err);
+
+#ifdef __cplusplus
+}
+#endif

@@ -1,0 +1,150 @@
+README for the binary package of MIRA 3.0.0
+===========================================
+
+
+
+Table of contents
+-----------------
+
+1. What's new?
+2. What's provided? 
+3. Installation
+4. Documentation
+5. Demos
+6. License and Disclaimer
+7. Contact
+
+
+1. What's new?
+==============
+
+Important notice: quite a number or switches had to be changed since the 2.8.x
+and the 2.9.16x1 releases. Existing parameter files need to be adapted.
+
+For a complete list of changes since a specific version, please consult
+CHANGES.txt (included in this binary package).
+
+
+
+2. What's provided?
+===================
+
+The binary package consists of binaries, documentation, a directory with small
+demos (for normal Sanger type sequences) and a directory with some support
+files.
+
+Binaries provided: 
+ - mira: for assembly of genome sequences
+ - miramem: estimating memory needed to assemble projects. Realised through
+   link to mira.
+ - convert_project: for converting project file types into other types
+ - caf2fasta, caf2gbf, caf2text, caf2html, gbf2caf and gbf2fasta are some
+   frequently used file converters (realised through links to convert_project)
+ - scftool: set of tools useful when working with SCF trace files
+ - fastatool: set of tools useful when working with FASTA trace files
+
+Scripts provided:
+ - fasta2frag.tcl: fragmenting sequences into smaller, overlapping
+   subsequences. Useful for simulating shotgun sequences. Can create
+   subsequences in both directions (/default) and also paired-end sequences.
+ - fastaselect.tcl: given a FATSA file (and possibly a FASTA quality file) and
+   a file with names of reads, select the sequences from the input FASTA (and
+   quality file) and writes them to an output FASTA
+ - fixACE4consed.tcl: Consed has a bug which incapacitates it from reading
+   consensus tags in ACE files written by the MIRA assembler (and possibly
+   other programs). This script massages an ACE file so that consed can read
+   the consensus tags.
+
+
+3. Installation
+===============
+
+The binaries (in directory "bin") are statically linked and self
+contained, they should work with any Linux kernel >=2.6.
+
+Copy the binaries (and scripts if you want) into a directory in your path
+environment (or add the extraction directory to your path variable) and you
+are ready to go.
+
+Support files for the Staden GAP4 assembly finishing tool and consed are in
+the "support" directory. Please refer to the documentation of the respective
+package on how to integrate them into your environment.
+
+You can install the manual files by copying them into a "man" directory of
+your system.
+
+
+4. Documentation
+================
+
+Documentation in man, html and texinfo format can be found in the 'docs'
+directory.
+
+Provided files:
+ - mira(.html|.1|.info)
+ - mira_usage(.html|.1|.info)
+ - mira_454dev (.html|.1|.info)
+ - mira_solexadev (.html|.1|.info)
+ - mira_hard (.html|.1|.info)
+ - mira_faq (.html|.1|.info)
+ - mira_logfiles (.html|.1|.info)
+
+The main documentation resides in the first file (mira...). If you are new to
+MIRA, I suggest you read at least the short introduction in the
+"mira_usage..." file. This will provide you a basic toolset for getting
+started with MIRA. For 454 data, please have a look at the corresponding help
+file.
+
+
+5. Demos
+========
+
+A few small usage examples for genomic and EST assembly are in the
+'minidemo' directory. As the demos rely on file links, this directory
+will have to be unpacked under a Unix operating system. Unpacking it
+with WinZip/WinRAR/other Windows applications and then transferring
+the directory to Linux will NOT work.
+
+Simply go into the directory and execute the runme.sh scripts (and have a look
+at them if you wish).
+
+
+6. License and Disclaimer
+=========================
+
+MIRA is under the GPL licence (currently v2).
+
+Any version of this software and documentation is provided 'as-is', without
+any express or implied warranty. In no event will the author be held liable
+for any damages arising from the use of this software. Every kind of usage of
+the software is only allowed with the acceptance of this license. 'Using'
+certainly defines installing and running the software, it also includes
+copying or providing the software or a service built upon its functionalities
+for third-parties.
+
+The author disclaims all warranties with regard to this software, in all
+versions. Use it at your own risk.
+
+Permission to use development versions of this software and its documentation
+for research purposes is hereby granted without fee. Copying and/or
+redistribution of development versions or using them for commercial projects
+is explicitly prohibited (these are DEVELOPMENT versions after all).
+
+
+7. Contact
+==========
+
+If you have any question regarding usage of MIRA with 454 or hybrid 454/Sanger
+data, please subscribe to the MIRA talk mailing list (see
+http://www.chevreux.org/mira_mailinglists.html) and send your question to:
+mira_talk@freelists.org
+
+To report bugs or ask for features, please use the new ticketing system at:
+    http://sourceforge.net/apps/trac/mira-assembler/
+This ensures that requests don't get lost.
+
+Home of MIRA: http://www.chevreux.org/projects_mira.html (going to change to
+SourceForge soon)
+
+
+Bastien

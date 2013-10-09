@@ -1,0 +1,6 @@
+gnlti136478626 strain1
+gnlti136479357 strain1
+gnlti136479063 strain1
+gnlti136478624 strain2
+gnlti136479522 strain2
+gnlti136477918 strain2

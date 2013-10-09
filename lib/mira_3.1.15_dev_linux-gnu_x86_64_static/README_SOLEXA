@@ -1,0 +1,159 @@
+                                                    Rheinfelden, February 2010
+
+
+
+Please read the README coming with this package. Please also read the
+"mira_solexadev.html" (or corresponding man page) that is available in the
+documents.
+
+
+README for assembling Solexa sequences with MIRA
+================================================
+
+Mapping
+-------
+
+This functionality is rock-solid as I've used it in own projects for more than
+2 years now. To give yiou an idea: for bacteria, with a bit of manual
+cleaning (10 to 15 minutes for close relatives of the reference), one should
+usually have found >99.99% of all mutations in a genome.
+
+Starting with a coverage of ~6 to 8, MIRA reliably finds all kinds of SNPs in
+the Solexa data. Please note: to attain a minimum coverage of 6 to 8 at most
+positions in the genome, you need to have a theoretical average coverage of
+approximately at least ~25 to ~30. Personally, I try to get my data at >= 30x
+
+
+Major differences to ELAND when using MIRA in mapping mode:
+- MIRA will find *all kinds* of SNPs in the data: base exchanges as well as
+  indels.
+- MIRA will also map reads to repetitive stretches in the genome
+- MIRA can make a distinction between a SNP and a probably unresolved repeat
+- MIRA performs a "sequence merging" that allows assembly projects for
+  bacteria or small fungi to be loaded in current generation finishing tools
+  (GAP4, consed etc) and also enhance the overview.
+- MIRA is certainly slower (I do not have ELAND to perform timing comparisons)
+- MIRA is probably quite a bit more memory intensive. You don't want to use it
+  with more than 20 to 30 million reads or on genomes much larger than 100mb.
+
+
+
+De-novo Solexa
+--------------
+
+MIRA can also do de-novo assemblies of Solexa.
+
+While in the past the feature was more experimental, it has now attained a
+stage where I think it is usable for bacteria. Slow, but usable.
+
+It's going to be slow and memory hungry, but it works for me. Note: if you
+want to do de-novo with only Solexa, try to get longer reads (70+ mers) and
+paired-end. This helps a lot.
+
+Note: Not really recommended when having Solexa coverages >>100x as MIRA gets
+even slower and more memory hungry. Will be worked on.
+
+
+De-novo hybrid Solexa/other
+---------------------------
+
+Hybrid assemblies of Solexa + other sequencing types: switched off in 2.9.46
+to rework some code and back again in 2.9.48. The results are, at least those
+I know of, really ... really good.
+
+Warning: slower even than de-novo Solexa (but I'm working on that).
+
+Note: Not really recommended when having Solexa coverages >>100x as MIRA gets
+even slower and more memory hungry. Will be worked on.
+
+
+
+Short FAQ:
+----------
+0) Q: Where do I start?
+   A: First, read the help file "mira_solexadev.html" (or corresponding man
+      page), they're both located in the "docs" directory.
+
+1) Q: Can MIRA also perform de-novo assembly with Solexa data?
+   A: Yes. Though it needs quite some memory, you probably want to do this
+      only for bacteria or very small eukaryotes. And try to get hold on
+      longer Solexa reads (76mers or more) and paired-end data.
+
+2) Q: In what formats do I need to supply Solexa data?
+   A: FASTA and FASTA quality file for the reads; GBF (GenBank format), FASTA
+      or CAF for the backbone.
+
+3) Q: What type do I need to give quality data?
+   A: These can be either the "old" Solexa scores (starting at -40) or "phred"
+      style quality values (starting at 0). See the -LR:ssiqf
+      parameter. Starting in first half of 2009, Illumina changed their
+      pipeline and you should get only "new" Solexa quality values after that.
+
+4) Q: How should I perform hybrid assemblies of Sanger/Solexa, 454/Solexa or
+      even Sanger/454/Solexa data?
+   A: You can choose between full-hybrid assembly (giving all data at the same
+      time) or a sequential assembly, first assembling long reads and then
+      mapping Solexas against the resulting assembly. Note that when using CAF
+      as input, this is still 'hybrid' assembly as unlike other assemblers,
+      the backbone reference is not just a simple FASTA sequence, but the full
+      assembly of the longer reads.
+
+5) Q: How do I quickly find SNPs between the backbone and my assembled Solexa
+      sequences?
+   A: In finishing tools (GAP4, consed, others), search for the "SROc", "SIOc"
+      or "SAOc" tags (in this order). Some indel SNPs are hiding as "WRMc"
+      tags, you probably need to have a closer look at them. Last stop: "UNSc"
+      tags.
+      More about this in the main manual and themaual for Solexa data.
+
+6) Q: How much memory does one need to assemble Solexa data with MIRA?
+   A: Currently a lot. A rough estimate is ~1GB to 1.5GB RAM per million
+      Solexa reads (36-40 mers, somewhat more for 50 or 75 mers).
+
+7) Q: How much disk space do I need?
+   A: Quite a bit, several gigabytes. Most of it you can be discarded after
+      the assembly (log files).
+
+8) Q: How long does MIRA need to assemble Solexa data?
+   A: Depends whether mapping or de-novo, the organisms size and number of
+      reads. As example, mapping 4.5m Solexa 36mers to a 4.2mb organism so
+      that up to 5 errors (base change / insertion / deletion) are found takes
+      21 minutes on my development system (using 4 processors). This time
+      includes full quality control, trimming, SNP searching etc.
+
+9) Q: Can MIRA use multiple cores or processors?
+   A: Since 2.9.28x6, parts can. At the moment only the SKIM algorithm can run
+      multiple threads. See "-GE:not" and "-SK:not".
+
+10) Q: What's the largest number of bases an indel can have to be found by
+       MIRA with Solexa data in mapping mode?
+    A: Depends (as always) on your coverage, read quality and the length of
+       your sequences.
+       For 36mers, MIRA reliably finds and categorises indels of size 1, 2
+       and 3, sometimes it also find 4 and 5. For 75 mers, indels of size 8
+       are no problem, 9-12 are possible.
+       Larger indels are not found per se (the reads don't map anymore to the
+       backbone), but marker tags in the assembly point to the site with a
+       "problem". When using paired-end reads and not merging them to the
+       backbone, indels of larger sizes can be found.
+
+11) Q: Are there any restrictions regarding the length of Solexa reads?
+    A: To the lower end, MIRA has some hard cutoff at 20 bases. To the upper
+       end, there are no real restrictions: you can have 36mer, 50mer, 76mers
+       or anything larger than that (and smaller than 20kb)
+
+
+
+If you have any question regarding usage of MIRA with Solexa hybrid
+Sanger/Solexa, 454/Solexa or even Sanger/454/Solexa data, please subscribe to
+the MIRA talk mailing list (see
+http://www.chevreux.org/mira_mailinglists.html) and send your question to:
+mira_talk@freelists.org
+
+Note: please make sure that the address you subscribe with and the address you
+use for sending mails are the same, else they are filtered away by the mailing
+list daemon.
+
+
+Have fun with your assemblies,
+  Bastien

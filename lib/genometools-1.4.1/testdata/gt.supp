@@ -1,0 +1,64 @@
+{
+   <zlib>
+   Memcheck:Cond
+   fun:_tr_flush_block
+   fun:deflate_slow
+   fun:deflate
+   fun:png_write_finish_row
+}
+{
+   <zlib>
+   Memcheck:Cond
+   fun:_tr_flush_block
+   fun:deflate_slow
+   fun:deflate
+   fun:png_write_filtered_row
+}
+{
+   <zlib>
+   Memcheck:Cond
+   fun:longest_match
+   fun:deflate_slow
+   fun:deflate
+   fun:do_flush
+   fun:gzclose
+   ...
+}
+{
+   <zlib>
+   Memcheck:Cond
+   fun:deflate_slow
+   fun:deflate
+   fun:gzclose
+   ...
+}
+{
+   toy_font_static_data_problem
+   Memcheck:Leak
+   ...
+   fun:FT_New_Face
+   ...
+}
+{
+   toy_font_static_data_problem
+   Memcheck:Leak
+   ...
+   fun:FT_Load_Glyph
+   ...
+}
+{
+   toy_font_static_data_problem
+   Memcheck:Leak
+   ...
+   fun:cairo_text_extents
+   ...
+}
+{
+   <pthreads_mac>
+   Memcheck:Cond
+   fun:pthread_rwlock_init
+   fun:gt_rwlock_new
+   fun:gt_ma_init
+   fun:gt_lib_init
+   ...
+}

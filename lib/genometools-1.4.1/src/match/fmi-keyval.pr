@@ -1,0 +1,18 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
+unsigned long gt_determinenumberofspecialstostore(const GtSpecialcharinfo
+                                                        *specialcharinfo);
+
+void gt_computefmkeyvalues (Fmindex *fm,
+                            const GtSpecialcharinfo *specialcharinfo,
+                            unsigned long bwtlength,
+                            unsigned int log2bsize,
+                            unsigned int log2markdist,
+                            unsigned int numofchars,
+                            unsigned int suffixlength,
+                            bool storeindexpos);
+
+#ifdef __cplusplus
+}
+#endif

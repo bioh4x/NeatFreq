@@ -1,0 +1,22 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
+unsigned long gt_skfmuniqueforward (const void *genericindex,
+                                 GT_UNUSED unsigned long offset,
+                                 GT_UNUSED unsigned long left,
+                                 GT_UNUSED unsigned long right,
+                                 GT_UNUSED unsigned long *witnessposition,
+                                 const GtUchar *qstart,
+                                 const GtUchar *qend);
+
+unsigned long gt_skfmmstats (const void *genericindex,
+                          GT_UNUSED unsigned long offset,
+                          GT_UNUSED unsigned long left,
+                          GT_UNUSED unsigned long right,
+                          unsigned long *witnessposition,
+                          const GtUchar *qstart,
+                          const GtUchar *qend);
+
+#ifdef __cplusplus
+}
+#endif
