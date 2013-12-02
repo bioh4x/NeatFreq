@@ -8,7 +8,7 @@ use File::Basename; #required for fileparse()
 use Getopt::Std; #better command line input method
 use Getopt::Long; #better command line input method
 
-my $NEATFREQ_INSTALL = "/home/jmccorri/scripts/NF_prod_testing";
+my $NEATFREQ_INSTALL = "/usr/local/devel/BCIS/assembly/tools/NeatFreq";
 my %Opts;
 
 if (-e("./run.LOG.txt")){ system("rm ./run.LOG.txt"); }
@@ -44,22 +44,25 @@ sub printl {
 # print anything once to STDOUT and once to the LOG file -- pretty useful, eh?
 ################################################################################################################################################################################################################################################
 sub outhelp {
-	print "USAGE :\nNeatFreq_auto.pl (NeatFreq wrapper script)";
-	printl "\n\t[ Count Mers -> Run Intelligent Selection -> Post-process to use maximal mate information ]\n\n";
+	print "\nUSAGE :\nNeatFreq_auto.pl (NeatFreq wrapper script)";
+	print "\n\t[ Count Mers -> Run Intelligent Selection -> Post-process to use maximal mate information ]\n\n";
 	
 	#SHARED
-	print "REQUITED:\n";
+	print "REQUIRED:\n";
 	print "\t-p <prefix>\n";
 	print "\t-r <reads.fasta>";
 	print "\t-rpairs <interleaved.fasta/q> \n";
 	print "\t\tFlags -r and -rpairs may be used alone for single library testing\n\t\tAll mates assumed to use inny orientation.\n";
+	
 	#PRE
 	print "\t-b <bin selection method>\n";
 	print "\t\t+ random = pull randomly from set (fast)\n\t\t+ align = run internal MSA within bins and include more low population sets (slow, -m flag required!)\n";
 	print "\t\t-m <cd-hit-est memory cutoff in MB> (required for use with -b target)\n";
 	print "\t-x <RMKFcutoff, set to approx. half of desired output coverage)\n";
+	print "\t-g <run analysis as fragment-only (low memory) but extract mates from reads input as pairs>\n";
 	print "\t-q <toggle on fastq mode> (default = fasta)\n";
 	print "\t-k <kmer size> (default = 19)\n";
+	
 	#NF
 	print "\nOPTIONAL:\n";
 	print "\t-v (silence print to screen, always verbose in logs)\n";
@@ -88,7 +91,8 @@ MAIN : {
 	my $log = 1;
 	my $keep = 0;
 	my $fastq_bool = 0;
-	my $status = GetOptions(\%Opts, "help!", "h!", "v!", "z!", "q!", 'k=s'=> \$kmer_size, 'N=s'=> \$NEW_NEATFREQ_INSTALL, 'f=s'=> \$offset, 'b=s'=> \$bin_extract_type, 'm=s'=> \$mem, 'r=s'=> \$reads_file, 'c=s'=> \$counts_file, 'p=s'=> \$prefix, 'x=s'=> \$cov_in, 'rpairs=s'=> \$rpairs);
+	my $run_as_frag_bool = 0;
+	my $status = GetOptions(\%Opts, "help!", "h!", "v!", "z!", "q!", 'g!', 'k=s'=> \$kmer_size, 'N=s'=> \$NEW_NEATFREQ_INSTALL, 'f=s'=> \$offset, 'b=s'=> \$bin_extract_type, 'm=s'=> \$mem, 'r=s'=> \$reads_file, 'c=s'=> \$counts_file, 'p=s'=> \$prefix, 'x=s'=> \$cov_in, 'rpairs=s'=> \$rpairs);
 	
 	#PARSE INPUT------------------------------------------------------------------------------------------------------------------START
 	print "\n++++ RUN CMD (NEATFREQ_AUTO) : NeatFreq Wrapper Started\n\n";
@@ -114,6 +118,10 @@ MAIN : {
 	if ( exists $Opts{q} ){ 
 		printl("Fastq mode requested\n");
 		$fastq_bool = 1;
+	}
+	if ( exists $Opts{g} ){ 
+		printl("Run all analysis as fragments (low memory) but recruit mates from input pairs.\n");
+		$run_as_frag_bool = 1;
 	}
 	if ( $kmer_size ){
 		printl("Using User-Input Kmer Size : $kmer_size\n");
@@ -168,7 +176,7 @@ MAIN : {
 	if ($reads_file && (-s("$reads_file")) ){
 		printl("Using input reads file : $reads_file\n");
 	}else{
-		printl("WARNING:\tNo fragment-only read file input or reads files are 0 bytes in size. ( $reads_file )\nEXITING!\n");
+		printl("WARNING:\tNo fragment-only read file input or reads files are 0 bytes in size. ( $reads_file )!\n");
 		# outhelp();
 	}
 	
@@ -178,6 +186,44 @@ MAIN : {
 	}else{
 		printl("WARNING:\tNo paired read file input or reads files are 0 bytes in size. ( $rpairs !\n");
 		# outhelp();
+	}
+	
+	
+	# CHECK FOR RUN AS FRAGMENTS
+	my $orig_fragments;
+	my $toggle = 0;
+	if ($run_as_frag_bool == 1) {
+		
+		if ($fastq_bool == 1){ 
+			if ($reads_file) {	
+				system("$NEATFREQ_INSTALL/lib/fastq_to_fasta_qual $reads_file tmp.ALL_FRAGS.fasta tmp.ALL_FRAGS.qual"); 
+				$orig_fragments = "tmp.ALL_FRAGS.fasta";
+				if (!(-s("tmp.ALL_FRAGS.fasta"))){ printl("++EXITING. CONVERSION FAILED.\n"); exit; }
+			}
+		}else{
+			if ($reads_file) {	$orig_fragments = $reads_file; }
+		}
+		
+		if (( $rpairs && (-s("$rpairs"))) && ($reads_file && (-s("$reads_file"))) ){
+			printl("+ WARNING : Running with fragments and pairs as fragment-only.  Merging sequences...\n");
+			my $newrpairs = "./ALL_INPUT.";
+			if ($fastq_bool == 1){$newrpairs = "$newrpairs" . "fastq";}
+			else{$newrpairs = "$newrpairs" . "fasta";}
+			runsys("cat $reads_file > $newrpairs");
+			runsys("cat $rpairs >> $newrpairs");
+			$toggle = 1;
+			$reads_file = $newrpairs;
+			undef($rpairs);
+		}elsif ( $reads_file && (-s("$reads_file")) ){
+			#no change required
+		}elsif ( $rpairs && (-s("$rpairs")) ){
+			$reads_file = $rpairs;
+			undef($rpairs);
+			$toggle = 1;
+		}else{
+			printl("No input sequences.\nExiting...\n");
+			exit;
+		}
 	}
 	
 	my $input_status;
@@ -243,24 +289,53 @@ MAIN : {
 			}elsif(-s("AUTO_FORMAT.frg.fasta")) {
 				runsys("$NEATFREQ_INSTALL/NeatFreq.pl -p $NF_prefix -b $bin_extract_type -x $cov_in -r AUTO_FORMAT.frg.fasta -c allreads.mer_counts.minocc1.FIX.txt -z -m $mem -v");
 			}else{
-				printl("\n\nERROR! No output found from NeatfFreq_preprocess.pl - see NeatFreq_auto.log for details\n\n");
+				printl("\n\nERROR! No output found from NeatFreq_preprocess.pl - see NeatFreq_auto.log for details\n\n");
 				exit;
 			}
 			
 		#POSTPROCESS
-			if ( $bin_extract_type eq "random" && $rpairs && (-s("$rpairs")) && $reads_file && (-s("$reads_file")) ){
+			if ( $run_as_frag_bool == 0 && ($bin_extract_type eq "random") && $rpairs && (-s("$rpairs")) && $reads_file && (-s("$reads_file")) ){
 					
 				my $ids = "$NF_prefix" . ".REDUCED_COVERAGE_ID_LIST.txt";
 				
 				my $numfrg = `grep -c \'\>\' AUTO_FORMAT.frg.fasta`;
+				chomp $numfrg;
 				if ( (-s("AUTO_FORMAT.frg.fasta")) && (!($numfrg > 0)) ){
 					printl("\n\nERROR : Failure to parse fasta output of NeatFreq.pl.  See NeatFreq_auto.log for details.\n\n");
 					exit;
 				}else{
 					$numfrg = 0;
 				}
+				
+				if ($fastq_bool == 0){ runsys("perl $NEATFREQ_INSTALL/NeatFreq_postprocess_random.pl -ids $ids -numfrg $numfrg -frag AUTO_FORMAT.frg.fasta -pair AUTO_FORMAT.prs.fasta");
+				}else{ runsys("perl $NEATFREQ_INSTALL/NeatFreq_postprocess_random.pl -ids $ids -numfrg $numfrg -frag AUTO_FORMAT.frg.fastq -pair AUTO_FORMAT.prs.fastq"); }
 			
-				runsys("perl $NEATFREQ_INSTALL/NeatFreq_postprocess_random.pl -ids $ids -numfrg $numfrg -frag AUTO_FORMAT.frg.fasta -pair AUTO_FORMAT.prs.fasta");
+			}elsif( ($run_as_frag_bool == 1) && ($toggle == 1) ){
+			
+				my $ids = "$NF_prefix" . ".REDUCED_COVERAGE_ID_LIST.txt";
+					
+				my $numfrg; 
+				if ($orig_fragments){ 
+					$numfrg = `grep -c \'\>\' $orig_fragments`;
+					chomp $numfrg;
+				}else{
+					$numfrg = 0;
+				}
+				
+				if ($fastq_bool == 0){ runsys("perl $NEATFREQ_INSTALL/NeatFreq_postprocess_random.pl -ids $ids -numfrg $numfrg -pair AUTO_FORMAT.frg.fasta");
+				}else{ runsys("perl $NEATFREQ_INSTALL/NeatFreq_postprocess_random.pl -ids $ids -numfrg $numfrg -pair AUTO_FORMAT.frg.fastq -q");  }
+					
+				if ($fastq_bool == 0){ printl("Fragment only output provided as:\n\t+ fasta : NEATFREQ_OUT.all_fragments.fasta , NEATFREQ_OUT.all_mates.fasta\n"); }
+				else{ printl("Fragment only output provided as:\n\t+ fasta :NEATFREQ_OUT.all_fragments.fasta , NEATFREQ_OUT.all_mates.fasta\n\t+ fastq : NEATFREQ_OUT.all_fragments.fastq , NEATFREQ_OUT.all_mates.fastq"); }
+			
+			}else{
+				
+				if ($fastq_bool == 0){ printl("Fragment only output provided as:\n\t+ fasta : $NF_prefix [..] x.fasta\n"); }
+				else{ 
+				my $ids = "$NF_prefix" . ".REDUCED_COVERAGE_ID_LIST.txt";
+				runsys("$NEATFREQ_INSTALL/lib/mira_3.1.15_dev_linux-gnu_x86_64_static/scripts/fastqselect.tcl -infile AUTO_FORMAT.frg.fastq -name $ids -outfile NEATFREQ_OUT.all_fragments.fastq");
+					printl("Fragment only output provided as:\n\t+ fasta :  $NF_prefix [..] x.fasta\n\t+ fastq : NEATFREQ_OUT.all_fragments.fastq\n"); 
+				}
 			}
 	}else{
 		#PREPROCESS
@@ -309,51 +384,56 @@ MAIN : {
 			}
 			
 		#POSTPROCESS
-			if ( $bin_extract_type eq "random" && $rpairs && (-s("$rpairs")) && $reads_file && (-s("$reads_file")) ){
+			if ( $run_as_frag_bool == 0 && ($bin_extract_type eq "random") && $rpairs && (-s("$rpairs")) && $reads_file && (-s("$reads_file")) ){
 					
 				my $ids = "$NF_prefix" . ".REDUCED_COVERAGE_ID_LIST.txt";
 				
 				my $numfrg = `grep -c \'\>\' AUTO_FORMAT.frg.fasta`;
+				chomp $numfrg;
 				if ( (-s("AUTO_FORMAT.frg.fasta")) && (!($numfrg > 0)) ){
 					printl("\n\nERROR : Failure to parse fasta output of NeatFreq.pl.  See NeatFreq_auto.log for details.\n\n");
 					exit;
 				}else{
 					$numfrg = 0;
 				}
+				
+				if ($fastq_bool == 0){ runsys("perl $NEATFREQ_INSTALL/NeatFreq_postprocess_random.pl -N $NEW_NEATFREQ_INSTALL -ids $ids -numfrg $numfrg -frag AUTO_FORMAT.frg.fasta -pair AUTO_FORMAT.prs.fasta");
+				}else{ runsys("perl $NEATFREQ_INSTALL/NeatFreq_postprocess_random.pl -N $NEW_NEATFREQ_INSTALL -ids $ids -numfrg $numfrg -frag AUTO_FORMAT.frg.fastq -pair AUTO_FORMAT.prs.fastq"); }
 			
-				runsys("perl $NEATFREQ_INSTALL/NeatFreq_postprocess_random.pl -N $NEW_NEATFREQ_INSTALL -ids $ids -numfrg $numfrg -frag AUTO_FORMAT.frg.fasta -pair AUTO_FORMAT.prs.fasta");
+			}elsif( ($run_as_frag_bool == 1) && ($toggle == 1) ){
+			
+				my $ids = "$NF_prefix" . ".REDUCED_COVERAGE_ID_LIST.txt";
+					
+				my $numfrg; 
+				if ($orig_fragments){ 
+					$numfrg = `grep -c \'\>\' $orig_fragments`;
+					chomp $numfrg;
+				}else{
+					$numfrg = 0;
+				}
+				
+				if ($fastq_bool == 0){ runsys("perl $NEATFREQ_INSTALL/NeatFreq_postprocess_random.pl -N $NEW_NEATFREQ_INSTALL -ids $ids -numfrg $numfrg -pair AUTO_FORMAT.frg.fasta");
+				}else{ runsys("perl $NEATFREQ_INSTALL/NeatFreq_postprocess_random.pl -N $NEW_NEATFREQ_INSTALL -ids $ids -numfrg $numfrg -pair AUTO_FORMAT.frg.fastq -q");  }
+					
+				if ($fastq_bool == 0){ printl("Fragment only output provided as:\n\t+ fasta : NEATFREQ_OUT.all_fragments.fasta , NEATFREQ_OUT.all_mates.fasta\n"); }
+				else{ printl("Fragment only output provided as:\n\t+ fasta :NEATFREQ_OUT.all_fragments.fasta , NEATFREQ_OUT.all_mates.fasta\n\t+ fastq : NEATFREQ_OUT.all_fragments.fastq , NEATFREQ_OUT.all_mates.fastq"); }
+			
+			}else{
+				
+				if ($fastq_bool == 0){ printl("Fragment only output provided as:\n\t+ fasta : $NF_prefix [..] x.fasta\n"); }
+				else{ 
+				my $ids = "$NF_prefix" . ".REDUCED_COVERAGE_ID_LIST.txt";
+				runsys("$NEATFREQ_INSTALL/lib/mira_3.1.15_dev_linux-gnu_x86_64_static/scripts/fastqselect.tcl -infile AUTO_FORMAT.frg.fastq -name $ids -outfile NEATFREQ_OUT.all_fragments.fastq");
+					printl("Fragment only output provided as:\n\t+ fasta :  $NF_prefix [..] x.fasta\n\t+ fastq : NEATFREQ_OUT.all_fragments.fastq\n"); 
+				}
 			}
 	}
 		
 	#CLEANUP
 	printl("CLEANING UP!\n");
-	#system("rm reads.des");
-	#system("rm reads.sds");
-	#system("rm reads.esq");
-	#system("rm reads.ssp");
-	#system("rm reads.ois");
-	#system("rm reads.llv");
-	#system("rm reads.suf");
-	#system("rm reads.prj");
-	#system("rm reads.lcp");
-	#system("rm mock.fastq");
-	#system("rm allreads.mer_counts.minocc1.txt");
-	#system("rm tyr*");
-	#system("rm extractFasta.log");
-	#system("rm uniq_counts_ids.txt");
-	#system("rm usable_reads_1.fasta");
-	#system("rm AUTO_FORMAT*");
 	system("rm -rf KMER_BINS_mp_frg KMER_BINS INITBINS_CDHITEST");
-	#system("rm allreads.fastq");
-	#system("rm allreads.fasta");
-	#system("rm allreads.fasta.qual");
-	#system("rm TESTreduced*");
-	#system("mkdir run.logs");
-	#system("mv *LOG* run.logs/");
 	my $outprefix = "$prefix" . ".NeatFreq_auto.LOG.txt";
 	system ("mv ./run.LOG.txt $outprefix");
-	
-	#printl("\nRUN COMPLETE!\nSee output file : $outfilename\n\nExiting.\n");
 		
 	close LOG;
 }
