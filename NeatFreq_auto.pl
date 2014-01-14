@@ -67,7 +67,9 @@ sub outhelp {
 	print "\nOPTIONAL:\n";
 	print "\t-v (silence print to screen, always verbose in logs)\n";
 	print "\t-z = keep all output files (bin information), normally cleaned at the end of each run\n";
-	print "\t-N = provide NeatFreq install location (if not updated in script)\n\n";
+	print "\t-N = provide NeatFreq install location (if not updated in script)\n";
+	print "\t-f <qv offset>\n\n";
+
 	print "\nExiting.";
 	
 	close LOG;
