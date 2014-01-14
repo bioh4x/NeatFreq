@@ -1099,15 +1099,10 @@ sub cov_reduce{
 	
 	#JOIN FASTA IDS
 	runsys("cat BIN_*ids.txt > ./REDUCED_COVERAGE_ID_LIST.txt");
-	
-	
-	
-	
-	# DEBUG EXIT
-	printl("\n\n\nDEBUG EXIT : 3rd party software req'd\nexit.\n");
-	exit;
-	
-	
+
+	# DEBUG EXIT - NO MORE AS OF 1/14/14
+	#printl("\n\n\nDEBUG EXIT : 3rd party software req'd\nexit.\n");
+	#exit;
 	
 	#EXTRACT
 	runsys("$NEATFREQ_INSTALL/lib/extractFasta -i $reads_file -idlist ./REDUCED_COVERAGE_ID_LIST.txt -o ./REDUCED_COV.fasta");
