@@ -67,9 +67,7 @@ sub outhelp {
 	print "\nOPTIONAL:\n";
 	print "\t-v (silence print to screen, always verbose in logs)\n";
 	print "\t-z = keep all output files (bin information), normally cleaned at the end of each run\n";
-	print "\t-N = provide NeatFreq install location (if not updated in script)\n";
-	print "\t-f <qv offset>\n\n";
-
+	print "\t-N = provide NeatFreq install location (if not updated in script)\n\n";
 	print "\nExiting.";
 	
 	close LOG;
@@ -332,11 +330,58 @@ MAIN : {
 			
 			}else{
 				
-				if ($fastq_bool == 0){ printl("Fragment only output provided as:\n\t+ fasta : $NF_prefix [..] x.fasta\n"); }
-				else{ 
-				my $ids = "$NF_prefix" . ".REDUCED_COVERAGE_ID_LIST.txt";
-				runsys("$NEATFREQ_INSTALL/lib/mira_3.1.15_dev_linux-gnu_x86_64_static/scripts/fastqselect.tcl -infile AUTO_FORMAT.frg.fastq -name $ids -outfile NEATFREQ_OUT.all_fragments.fastq");
-					printl("Fragment only output provided as:\n\t+ fasta :  $NF_prefix [..] x.fasta\n\t+ fastq : NEATFREQ_OUT.all_fragments.fastq\n"); 
+				if ($fastq_bool == 0){ 
+					if ( $input_status==2 ){
+						# both prepare
+						printl("Fragment only output provided as:\n\t+ fasta : $NF_prefix [..] X.fragments.fasta\n"); 
+						printl("Paired-end only output provided as:\n\t+ fasta : $NF_prefix [..] X.pairs.fasta\n"); 
+					}elsif ( $input_status==1 ){
+						# pair prepare
+						printl("Paired-end only output provided as:\n\t+ fasta : $NF_prefix [..] X.pairs.fasta\n"); 
+					}elsif( $input_status==0 ){
+						# fragments prepare
+						printl("Fragment only output provided as:\n\t+ fasta : $NF_prefix [..] X.fragments.fasta\n"); 
+					}
+					
+				}else{ 
+				
+					# UPDATE
+					my $ids = "$NF_prefix" . ".REDUCED_COVERAGE_ID_LIST.txt";
+					my $frg_ids = "$NF_prefix" . ".ALL.frags.ids.txt";
+					my $prs_ids = "$NF_prefix" . ".ALL.pairs.ids.txt";
+					if ( $input_status==2 ){
+						# both exist
+						
+							# fragment convert
+						runsys("$NEATFREQ_INSTALL/lib/mira_3.1.15_dev_linux-gnu_x86_64_static/scripts/fastqselect.tcl -infile allreads.fastq -name $frg_ids -outfile NEATFREQ_OUT.all_fragments.fastq");
+						printl("Fragment only output provided as:\n\t+ fasta :  $NF_prefix [..] x.fasta\n\t+ fastq : NEATFREQ_OUT.all_fragments.fastq\n"); 
+							# pair convert
+						runsys("$NEATFREQ_INSTALL/lib/mira_3.1.15_dev_linux-gnu_x86_64_static/scripts/fastqselect.tcl -infile allreads.fastq -name $prs_ids -outfile NEATFREQ_OUT.all_pairs.fastq");
+						printl("Paired end output provided as:\n\t+ fasta :  $NF_prefix [..] x.fasta\n\t+ fastq : NEATFREQ_OUT.pairs.fastq\n"); 
+						
+					}elsif( $input_status==1 ){
+						# pairs only
+						
+							# fragment convert
+						runsys("$NEATFREQ_INSTALL/lib/mira_3.1.15_dev_linux-gnu_x86_64_static/scripts/fastqselect.tcl -infile allreads.fastq -name $frg_ids -outfile NEATFREQ_OUT.all_fragments.fastq");
+						printl("Fragment only output provided as:\n\t+ fasta :  $NF_prefix [..] x.fasta\n\t+ fastq : NEATFREQ_OUT.all_fragments.fastq\n"); 
+							# pair convert
+						runsys("$NEATFREQ_INSTALL/lib/mira_3.1.15_dev_linux-gnu_x86_64_static/scripts/fastqselect.tcl -infile allreads.fastq -name $prs_ids -outfile NEATFREQ_OUT.all_pairs.fastq");
+						printl("Paired end output provided as:\n\t+ fasta :  $NF_prefix [..] x.fasta\n\t+ fastq : NEATFREQ_OUT.pairs.fastq\n"); 
+						
+					}elsif( $input_status==0 ){
+						# fragments only
+						
+							# fragment convert
+						runsys("$NEATFREQ_INSTALL/lib/mira_3.1.15_dev_linux-gnu_x86_64_static/scripts/fastqselect.tcl -infile allreads.fastq -name $ids -outfile NEATFREQ_OUT.all_fragments.fastq");
+						printl("Fragment only output provided as:\n\t+ fasta :  $NF_prefix [..] x.fasta\n\t+ fastq : NEATFREQ_OUT.all_fragments.fastq\n"); 
+						
+					}
+					
+					#my $ids = "$NF_prefix" . ".REDUCED_COVERAGE_ID_LIST.txt";
+					#runsys("$NEATFREQ_INSTALL/lib/mira_3.1.15_dev_linux-gnu_x86_64_static/scripts/fastqselect.tcl -infile AUTO_FORMAT.frg.fastq -name $ids -outfile NEATFREQ_OUT.all_fragments.fastq");
+					#printl("Fragment only output provided as:\n\t+ fasta :  $NF_prefix [..] x.fasta\n\t+ fastq : NEATFREQ_OUT.all_fragments.fastq\n"); 
+				
 				}
 			}
 	}else{
@@ -422,11 +467,58 @@ MAIN : {
 			
 			}else{
 				
-				if ($fastq_bool == 0){ printl("Fragment only output provided as:\n\t+ fasta : $NF_prefix [..] x.fasta\n"); }
-				else{ 
-				my $ids = "$NF_prefix" . ".REDUCED_COVERAGE_ID_LIST.txt";
-				runsys("$NEATFREQ_INSTALL/lib/mira_3.1.15_dev_linux-gnu_x86_64_static/scripts/fastqselect.tcl -infile AUTO_FORMAT.frg.fastq -name $ids -outfile NEATFREQ_OUT.all_fragments.fastq");
-					printl("Fragment only output provided as:\n\t+ fasta :  $NF_prefix [..] x.fasta\n\t+ fastq : NEATFREQ_OUT.all_fragments.fastq\n"); 
+				if ($fastq_bool == 0){ 
+					if ( $input_status==2 ){
+						# both prepare
+						printl("Fragment only output provided as:\n\t+ fasta : $NF_prefix [..] X.fragments.fasta\n"); 
+						printl("Paired-end only output provided as:\n\t+ fasta : $NF_prefix [..] X.pairs.fasta\n"); 
+					}elsif ( $input_status==1 ){
+						# pair prepare
+						printl("Paired-end only output provided as:\n\t+ fasta : $NF_prefix [..] X.pairs.fasta\n"); 
+					}elsif( $input_status==0 ){
+						# fragments prepare
+						printl("Fragment only output provided as:\n\t+ fasta : $NF_prefix [..] X.fragments.fasta\n"); 
+					}
+						
+				}else{ 
+					
+					# UPDATE
+					my $ids = "$NF_prefix" . ".REDUCED_COVERAGE_ID_LIST.txt";
+					my $frg_ids = "$NF_prefix" . ".ALL.frags.ids.txt";
+					my $prs_ids = "$NF_prefix" . ".ALL.pairs.ids.txt";
+					if ( $input_status==2 ){
+						# both exist
+						
+							# fragment convert
+						runsys("$NEATFREQ_INSTALL/lib/mira_3.1.15_dev_linux-gnu_x86_64_static/scripts/fastqselect.tcl -infile allreads.fastq -name $frg_ids -outfile NEATFREQ_OUT.all_fragments.fastq");
+						printl("Fragment only output provided as:\n\t+ fasta :  $NF_prefix [..] x.fasta\n\t+ fastq : NEATFREQ_OUT.all_fragments.fastq\n"); 
+							# pair convert
+						runsys("$NEATFREQ_INSTALL/lib/mira_3.1.15_dev_linux-gnu_x86_64_static/scripts/fastqselect.tcl -infile allreads.fastq -name $prs_ids -outfile NEATFREQ_OUT.all_pairs.fastq");
+						printl("Paired end output provided as:\n\t+ fasta :  $NF_prefix [..] x.fasta\n\t+ fastq : NEATFREQ_OUT.pairs.fastq\n"); 
+						
+					}elsif( $input_status==1 ){
+						# pairs only
+						
+							# fragment convert
+						runsys("$NEATFREQ_INSTALL/lib/mira_3.1.15_dev_linux-gnu_x86_64_static/scripts/fastqselect.tcl -infile allreads.fastq -name $frg_ids -outfile NEATFREQ_OUT.all_fragments.fastq");
+						printl("Fragment only output provided as:\n\t+ fasta :  $NF_prefix [..] x.fasta\n\t+ fastq : NEATFREQ_OUT.all_fragments.fastq\n"); 
+							# pair convert
+						runsys("$NEATFREQ_INSTALL/lib/mira_3.1.15_dev_linux-gnu_x86_64_static/scripts/fastqselect.tcl -infile allreads.fastq -name $prs_ids -outfile NEATFREQ_OUT.all_pairs.fastq");
+						printl("Paired end output provided as:\n\t+ fasta :  $NF_prefix [..] x.fasta\n\t+ fastq : NEATFREQ_OUT.pairs.fastq\n"); 
+						
+					}elsif( $input_status==0 ){
+						# fragments only
+						
+							# fragment convert
+						runsys("$NEATFREQ_INSTALL/lib/mira_3.1.15_dev_linux-gnu_x86_64_static/scripts/fastqselect.tcl -infile allreads.fastq -name $ids -outfile NEATFREQ_OUT.all_fragments.fastq");
+						printl("Fragment only output provided as:\n\t+ fasta :  $NF_prefix [..] x.fasta\n\t+ fastq : NEATFREQ_OUT.all_fragments.fastq\n"); 
+						
+					}
+					
+					#my $ids = "$NF_prefix" . ".REDUCED_COVERAGE_ID_LIST.txt";
+					#runsys("$NEATFREQ_INSTALL/lib/mira_3.1.15_dev_linux-gnu_x86_64_static/scripts/fastqselect.tcl -infile AUTO_FORMAT.frg.fastq -name $ids -outfile NEATFREQ_OUT.all_fragments.fastq");
+					#printl("Fragment only output provided as:\n\t+ fasta :  $NF_prefix [..] x.fasta\n\t+ fastq : NEATFREQ_OUT.all_fragments.fastq\n"); 
+				
 				}
 			}
 	}
