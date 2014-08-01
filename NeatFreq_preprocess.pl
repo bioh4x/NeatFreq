@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 #INITIAL SETUP
 # J. Craig Venter Institute
-# NeatFreq ver 1.0
+# NeatFreq ver 1.0.1
 # Written by Jamison M. McCorrison (jmccorri@jcvi.org)
 
 use strict;
@@ -10,7 +10,8 @@ use Getopt::Std; #better command line input method
 use Getopt::Long; #better command line input method
 
 #OPEN LOG
-my $NEATFREQ_INSTALL = "/home/jmccorri/scripts/NF_prod_testing";
+my $NEATFREQ_INSTALL = `pwd`;
+chomp $NEATFREQ_INSTALL;
 open LOG, "> ./NeatFreq_preprocess.LOG.txt";
 
 ########################################################################################################################
@@ -63,14 +64,14 @@ sub fixfasta {
 	
 	printl("\n= 01 FIX IDS =\n");
 	if( (-s($fragfile)) && (-s($pairfile)) ){
-		runsys("$NEATFREQ_INSTALL/configure_automaton_for_neatfreq.pl -frg $fragfile -prs $pairfile -out AUTO_FORMAT");
+		runsys("$NEATFREQ_INSTALL/configure_automaton_for_neatfreq.pl -N $NEATFREQ_INSTALL -frg $fragfile -prs $pairfile -out AUTO_FORMAT");
 		runsys("cat AUTO_FORMAT.frg.fasta > allreads.fasta");
 		runsys("cat AUTO_FORMAT.prs.fasta >> allreads.fasta");
 	}
 	elsif(-s($fragfile)){
-		runsys("/usr/local/bin/fastx_renamer -n COUNT -i $fragfile -o allreads.fasta");
+		runsys("$NEATFREQ_INSTALL/lib/fastx_renamer -n COUNT -i $fragfile -o allreads.fasta");
 	}else{
-		runsys("/usr/local/bin/fastx_renamer -n COUNT -i $pairfile -o allreads.fasta");
+		runsys("$NEATFREQ_INSTALL/lib/fastx_renamer -n COUNT -i $pairfile -o allreads.fasta");
 	}
 	
 	printl("\n\n= 02 TALLYMER =\n");
@@ -96,9 +97,9 @@ sub fixfastq {
 	printl("\n= 01 FIX IDS AND CREATE FASTA EQUIVALENTS =\n");
 	if( (-s($fragfile)) && (-s($pairfile)) ){
 		if ($offset != 0){
-			runsys("$NEATFREQ_INSTALL/configure_automaton_fastq_for_neatfreq.pl -f $offset -frg $fragfile -prs $pairfile -out AUTO_FORMAT");
+			runsys("$NEATFREQ_INSTALL/configure_automaton_fastq_for_neatfreq.pl -N $NEATFREQ_INSTALL -f $offset -frg $fragfile -prs $pairfile -out AUTO_FORMAT");
 		}else{
-			runsys("$NEATFREQ_INSTALL/configure_automaton_fastq_for_neatfreq.pl -frg $fragfile -prs $pairfile -out AUTO_FORMAT");
+			runsys("$NEATFREQ_INSTALL/configure_automaton_fastq_for_neatfreq.pl -N $NEATFREQ_INSTALL -frg $fragfile -prs $pairfile -out AUTO_FORMAT");
 		}
 		runsys("cat AUTO_FORMAT.frg.fastq > allreads.fastq");
 		runsys("cat AUTO_FORMAT.prs.fastq >> allreads.fastq");
@@ -142,7 +143,8 @@ sub fixfastq {
 MAIN : {
 #command line input vars
 	my %Opts;
-	my ($fragfile, $pairfile, $fastq_status, $mersize, $offset, $cleanup, $NEW_NEATFREQ_INSTALL);
+	my ($fragfile, $pairfile, $fastq_status, $mersize, $offset, $cleanup);
+	my $NEW_NEATFREQ_INSTALL = `pwd`;
 #pull in command line input
 	my $status = GetOptions(\%Opts, "help", "h", "q", "z", 'm=s'=> \$mersize, 'f=s'=> \$offset, 'N=s'=> \$NEW_NEATFREQ_INSTALL, 'frag=s'=> \$fragfile, 'pair=s'=> \$pairfile);
 	if ( exists $Opts{help} || exists $Opts{h}){ outhelp(); }
@@ -167,6 +169,11 @@ MAIN : {
 		}
 		$NEATFREQ_INSTALL = $NEW_NEATFREQ_INSTALL;
 	}
+		if (!(-s("$NEW_NEATFREQ_INSTALL/NeatFreq.pl"))){
+			printl("\n\nERROR! : No NeatFreq install found in suggested install directory. ( $NEW_NEATFREQ_INSTALL/NeatFreq.pl )\n\nExiting...\n");
+			exit;
+		}
+	
 	if ( ($fragfile) && ($pairfile) && (-s("$fragfile")) && (-s("$pairfile")) ){
 		printl("\nUSING INPUT FRAGMENT-ONLY SEQUENCE FILE : $fragfile\n"); 
 		printl("\nUSING INPUT PAIRED END SEQUENCE FILE : $pairfile\n"); 
