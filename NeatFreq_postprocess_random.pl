@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 #INITIAL SETUP
 # J. Craig Venter Institute
-# NeatFreq ver 1.0
+# NeatFreq ver 1.0.1
 # Written by Jamison M. McCorrison (jmccorri@jcvi.org)
 
 use strict;
@@ -35,7 +35,7 @@ sub outhelp {
 	printl("\tInput Flags:\n");
 	printl("\t-frag fragments.fast[a/1]\n\t-pair pairs.interleaved.fast[a/q]\n");
 	printl("\t-q\ttoggles fasta or fastq mode (not auto-detected!)\n");
-	printl("\t-ids ids.txt\tOne ID per line.\n\t-numfrg 120\tfragment count in original input (grep -c \'\>\' AUTO_FORMAT.frg.fasta)\n");
+	printl("\t-ids ids.txt\tOne ID per line.\n\t-numfrg\tfragment count in original input (grep -c \'\>\' AUTO_FORMAT.frg.fasta)\n");
 	printl("\t-N = provide NeatFreq install location (if not updated in script)\n\n");
 	exit;
 }
@@ -111,12 +111,16 @@ sub fixfasta {
 	#FRAGMENTS - EXTRACT ALL
 			
 		# EXTRACT
-		runsys("$NEATFREQ_INSTALL/lib/extractFasta -i $fragfile -idlist all_fragment_reads.ids.txt -o NEATFREQ_OUT.fragsfromfrags");
+		if ($fragfile && (-s($fragfile))){
+			runsys("$NEATFREQ_INSTALL/lib/extractFasta -i $fragfile -idlist all_fragment_reads.ids.txt -o NEATFREQ_OUT.fragsfromfrags");
+		}
 		runsys("$NEATFREQ_INSTALL/lib/extractFasta -i $pairfile -idlist matesasfragments.ids.txt -o NEATFREQ_OUT.fragsfrommates");
 		runsys("$NEATFREQ_INSTALL/lib/extractFasta -i $pairfile -idlist validmate.ids.txt -o NEATFREQ_OUT.all_mates");
 		
 		#JOIN
-		runsys("cat NEATFREQ_OUT.fragsfromfrags_1.fasta > NEATFREQ_OUT.all_fragments.fasta");
+		if (-s($fragfile)){
+			runsys("cat NEATFREQ_OUT.fragsfromfrags_1.fasta > NEATFREQ_OUT.all_fragments.fasta");
+		}
 		runsys("cat NEATFREQ_OUT.fragsfrommates_1.fasta >> NEATFREQ_OUT.all_fragments.fasta");
 		runsys("mv NEATFREQ_OUT.all_mates_1.fasta NEATFREQ_OUT.all_mates.fasta");
 	
@@ -196,7 +200,10 @@ sub fixfastq {
 		#runsys("/usr/local/devel/BCIS/assembly/tools/extractFasta -i $fragfile -idlist all_fragment_reads.ids.txt -o NEATFREQ_OUT.fragsfromfrags");
 		#runsys("/usr/local/devel/BCIS/assembly/tools/extractFasta -i $pairfile -idlist matesasfragments.ids.txt -o NEATFREQ_OUT.fragsfrommates");
 		#runsys("/usr/local/devel/BCIS/assembly/tools/extractFasta -i $pairfile -idlist validmate.ids.txt -o NEATFREQ_OUT.all_mates");
-		runsys("$NEATFREQ_INSTALL/lib/mira_3.1.15_dev_linux-gnu_x86_64_static/scripts/fastqselect.tcl -infile $fragfile -name all_fragment_reads.ids.txt -outfile NEATFREQ_OUT.fragsfromfrags_1.fastq");
+		
+		if ($fragfile && (-s($fragfile))){
+			runsys("$NEATFREQ_INSTALL/lib/mira_3.1.15_dev_linux-gnu_x86_64_static/scripts/fastqselect.tcl -infile $fragfile -name all_fragment_reads.ids.txt -outfile NEATFREQ_OUT.fragsfromfrags_1.fastq");
+		}
 		runsys("$NEATFREQ_INSTALL/lib/mira_3.1.15_dev_linux-gnu_x86_64_static/scripts/fastqselect.tcl -infile $pairfile -name matesasfragments.ids.txt -outfile NEATFREQ_OUT.fragsfrommates_1.fastq");
 		runsys("$NEATFREQ_INSTALL/lib/mira_3.1.15_dev_linux-gnu_x86_64_static/scripts/fastqselect.tcl -infile $pairfile -name validmate.ids.txt -outfile NEATFREQ_OUT.all_mates.fastq");
 		
@@ -208,7 +215,7 @@ sub fixfastq {
 	#CLEAN UP
 	runsys("rm all_fragment_reads.ids.txt");
 	runsys("rm all_mate_reads.ids.txt");
-	runsys("rm validmate.ids.txt");
+	#runsys("rm validmate.ids.txt");
 	runsys("rm matesasfragments.ids.txt");
 	runsys("rm NEATFREQ_OUT.fragsfromfrags_1.fastq");
 	runsys("rm NEATFREQ_OUT.fragsfrommates_1.fastq");
@@ -231,9 +238,13 @@ MAIN : {
 		printl("FASTQ MODE enabled\n");
 		$fastq_status = 1; }
 	else{ $fastq_status = 0; }
-	if ($numfrg){
+	if ($numfrg && $numfrg > 0){
 		printl("\nUSING INPUT FRAMENT COUNT = $numfrg\n");
+	}elsif($numfrg == 0){
+		printl("\nUSING NULL FRAGMENT COUNT = $numfrg\n");
+		
 	}else{
+		printl("\nCAN'T FIND = $numfrg\n");
 		outhelp();
 	}
 	if (($NEW_NEATFREQ_INSTALL) && ($NEW_NEATFREQ_INSTALL ne $NEATFREQ_INSTALL)){
@@ -258,8 +269,9 @@ MAIN : {
 			printl("\nUSING INPUT CAS FILE : $fragfile\n"); 
 		}
 		else{ 
-			printl("\nPROBLEM FOUND : File $fragfile does not exist or has 0 byte size.\nExiting...");
-			exit;
+			#printl("\nPROBLEM FOUND : File $fragfile does not exist or has 0 byte size.\nExiting...");
+			printl("\nWARNING : File $fragfile does not exist or has 0 byte size.\n");
+			#exit;
 		}  
 	}
 	if ( $pairfile ){ 
