@@ -2,6 +2,7 @@
 use strict;
 
 sub outhelp(){
+	print"FLAGS:\n-frg fragments.fastq\n-prs pairs.interleaved.fastq\n-out output_prefix\n-N = provide NeatFreq install location (if not updated in script)\n\nEXITING.\n";
 	exit;
 }
 
@@ -14,7 +15,9 @@ sub runsys {
 MAIN : {
 	print "CONFIGURE READS FOR NEATFREQ!\n";
 	
-	my $in; my $dir; my $out; my $dummy; my $prefix; my $infrg; my $inprs;
+	my $in; my $dir; my $out; my $dummy; my $prefix; my $infrg; my $inprs; 
+	my $NEW_NEATFREQ_INSTALL = `pwd`;
+	chomp $NEW_NEATFREQ_INSTALL;
 	while (@ARGV){
 		$dummy=shift(@ARGV); 						#check -[a-z]
 		if ( $dummy eq '-frg'){
@@ -26,16 +29,28 @@ MAIN : {
 		}elsif ( $dummy eq '-out'){
 			$prefix = shift(@ARGV);
 			print "\nprefix in = $prefix\n";
+		}elsif ( $dummy eq '-N'){
+			$NEW_NEATFREQ_INSTALL = shift(@ARGV);
+			print "NeatFreq install location in = $NEW_NEATFREQ_INSTALL\n";
+			print "Forcing use of user-selected NeatFreq install directory : $NEW_NEATFREQ_INSTALL\n";
+			if (!(-s("$NEW_NEATFREQ_INSTALL/NeatFreq.pl"))){
+				print "\n\nERROR! : No NeatFreq install found in suggested install directory.  \n\nExiting...\n";
+				exit;
+			}
 		}
 		else{ 										#incorrect -[a-z] input
 			print "*ERROR: Incorrect data entry $dummy.\n\n";
 			outhelp();
 		}
+		if (!(-s("$NEW_NEATFREQ_INSTALL/NeatFreq.pl"))){
+			print "\n\nERROR! : No NeatFreq install found in suggested install directory. ( $NEW_NEATFREQ_INSTALL/NeatFreq.pl )\n\nExiting...\n";
+			exit;
+		}
 	}
 	
 	runsys("cat $infrg > all.Z.fasta");
 	runsys("cat $inprs >> all.Z.fasta");
-	runsys("/usr/local/bin/fastx_renamer -n COUNT -i all.Z.fasta -o all.COUNT.fasta");
+	runsys("$NEW_NEATFREQ_INSTALL/lib/fastx_renamer -n COUNT -i all.Z.fasta -o all.COUNT.fasta");
 	
 	my $frag_count = `grep -c '>' $infrg`;
 	chomp $frag_count;
@@ -44,8 +59,8 @@ MAIN : {
 	chomp $check_count;
 	
 	if ((!(-s("all.COUNT.fasta"))) || ($check_count <= 1)){
-		runsys("/usr/local/devel/BCIS/assembly/tools/multiLINEfasta_to_singleLINEfasta.pl all.Z.fasta > all.Z.1line.fasta");
-		runsys("/usr/local/bin/fastx_renamer -n COUNT -i all.Z.1line.fasta -o all.COUNT.fasta");
+		runsys("$NEW_NEATFREQ_INSTALL/lib/multiLINEfasta_to_singleLINEfasta.pl all.Z.fasta > all.Z.1line.fasta");
+		runsys("$NEW_NEATFREQ_INSTALL/lib/fastx_renamer -n COUNT -i all.Z.1line.fasta -o all.COUNT.fasta");
 	}
 		
 	
