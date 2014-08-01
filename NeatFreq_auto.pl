@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 # J. Craig Venter Institute
-# NeatFreq ver 1.0
+# NeatFreq ver 1.0.1
 # Written by Jamison M. McCorrison (jmccorri@jcvi.org)
 
 use strict;
@@ -8,7 +8,8 @@ use File::Basename; #required for fileparse()
 use Getopt::Std; #better command line input method
 use Getopt::Long; #better command line input method
 
-my $NEATFREQ_INSTALL = "/usr/local/devel/BCIS/assembly/tools/NeatFreq";
+my $NEATFREQ_INSTALL = `pwd`;
+chomp $NEATFREQ_INSTALL;
 my %Opts;
 
 if (-e("./run.LOG.txt")){ system("rm ./run.LOG.txt"); }
@@ -77,8 +78,10 @@ sub outhelp {
 ################################################################################################################################################################################################################################################
 sub bp_count {
 	my $file = shift;
-	my $inputcount = `/usr/local/packages/clc-ngs-cell/sequence_info $file | grep \'Total\' | awk \'{print \$2}\'`;
+	#my $inputcount = `/usr/local/packages/clc-ngs-cell/sequence_info $file | grep \'Total\' | awk \'{print \$2}\'`;
+	my $inputcount = `grep -v \'>\' $file | wc -m | awk \'{print $1}\'`;
 	chomp $inputcount;
+	printl("DEBUG DEBUG DEBUG : $inputcount = inputcount\n\n\n");
 	return $inputcount;
 }
 
@@ -107,14 +110,20 @@ MAIN : {
 		printl("Saving all output per user request (-z)\n");
 		$keep = 1;
 	}
+	
 	if (($NEW_NEATFREQ_INSTALL) && ($NEW_NEATFREQ_INSTALL ne $NEATFREQ_INSTALL)){
 		printl("Forcing use of user-selected NeatFreq install directory : $NEW_NEATFREQ_INSTALL\n");
 		if (!(-s("$NEW_NEATFREQ_INSTALL/NeatFreq.pl"))){
-			printl("\n\nERROR! : No NeatFreq install found in suggested install directory.  \n\nExiting...\n");
+			printl("\n\nERROR! : No NeatFreq install found in suggested install directory. ( $NEATFREQ_INSTALL/NeatFreq.pl ) \n\nExiting...\n");
 			exit;
 		}
 		$NEATFREQ_INSTALL = $NEW_NEATFREQ_INSTALL;
 	}
+	if (!(-s("$NEATFREQ_INSTALL/NeatFreq.pl"))){
+		printl("\n\nERROR! : No NeatFreq install found in suggested install directory. ( $NEATFREQ_INSTALL/NeatFreq.pl )\n\nExiting...\n");
+		exit;
+	}
+		
 	if ( exists $Opts{q} ){ 
 		printl("Fastq mode requested\n");
 		$fastq_bool = 1;
@@ -251,28 +260,28 @@ MAIN : {
 		#PREPROCESS
 			if($input_status == 2){
 				if ($fastq_bool == 1){ 
-					if ($offset){ runsys("perl $NEATFREQ_INSTALL/NeatFreq_preprocess.pl -q -f $offset -m $kmer_size -pair $rpairs -frag $reads_file"); }
+					if ($offset){ runsys("perl $NEATFREQ_INSTALL/NeatFreq_preprocess.pl -N NEATFREQ_INSTALL  -q -f $offset -m $kmer_size -pair $rpairs -frag $reads_file"); }
 					else{ runsys("perl $NEATFREQ_INSTALL/NeatFreq_preprocess.pl -q -m $kmer_size -pair $rpairs -frag $reads_file"); }
 				}
 				else { 
-					if ($offset){ runsys("perl $NEATFREQ_INSTALL/NeatFreq_preprocess.pl -f $offset -m $kmer_size -pair $rpairs -frag $reads_file"); }
+					if ($offset){ runsys("perl $NEATFREQ_INSTALL/NeatFreq_preprocess.pl -N NEATFREQ_INSTALL -f $offset -m $kmer_size -pair $rpairs -frag $reads_file"); }
 					else{ runsys("perl $NEATFREQ_INSTALL/NeatFreq_preprocess.pl -m $kmer_size -pair $rpairs -frag $reads_file"); }
 				}
 			}elsif($input_status==1){
 				if ($fastq_bool == 1){ 
-					if ($offset){ runsys("perl $NEATFREQ_INSTALL/NeatFreq_preprocess.pl -q -f $offset -m $kmer_size -pair $rpairs"); }
+					if ($offset){ runsys("perl $NEATFREQ_INSTALL/NeatFreq_preprocess.pl -N NEATFREQ_INSTALL -q -f $offset -m $kmer_size -pair $rpairs"); }
 					else{ runsys("perl $NEATFREQ_INSTALL/NeatFreq_preprocess.pl -q -m $kmer_size -pair $rpairs"); }
 				}else{
-					if ($offset){ runsys("perl $NEATFREQ_INSTALL/NeatFreq_preprocess.pl -f $offset -m $kmer_size -pair $rpairs"); }
+					if ($offset){ runsys("perl $NEATFREQ_INSTALL/NeatFreq_preprocess.pl -N NEATFREQ_INSTALL -f $offset -m $kmer_size -pair $rpairs"); }
 					else{ runsys("perl $NEATFREQ_INSTALL/NeatFreq_preprocess.pl -m $kmer_size -pair $rpairs"); }
 				}
 			}else{
 				if ($fastq_bool == 1){ 
-					if ($offset){ runsys("perl $NEATFREQ_INSTALL/NeatFreq_preprocess.pl -q -f $offset -m $kmer_size -frag $reads_file"); }
+					if ($offset){ runsys("perl $NEATFREQ_INSTALL/NeatFreq_preprocess.pl -N NEATFREQ_INSTALL -q -f $offset -m $kmer_size -frag $reads_file"); }
 					else{ runsys("perl $NEATFREQ_INSTALL/NeatFreq_preprocess.pl -q -m $kmer_size -frag $reads_file"); }
 				}
 				else { 
-					if ($offset){ runsys("perl $NEATFREQ_INSTALL/NeatFreq_preprocess.pl -f $offset -m $kmer_size -frag $reads_file"); }
+					if ($offset){ runsys("perl $NEATFREQ_INSTALL/NeatFreq_preprocess.pl -N NEATFREQ_INSTALL -f $offset -m $kmer_size -frag $reads_file"); }
 					else{ runsys("perl $NEATFREQ_INSTALL/NeatFreq_preprocess.pl -m $kmer_size -frag $reads_file"); }
 				}
 			}
@@ -281,6 +290,10 @@ MAIN : {
 		
 			# PREFIX
 			my $NF_prefix = "$prefix" . "." . "$bin_extract_type" . "." . "$cov_in";
+			
+			# 4/14 #
+			
+			########
 				
 			if ((-s("AUTO_FORMAT.frg.fasta")) && (-s("AUTO_FORMAT.prs.fasta")) && (-s("allreads.mer_counts.minocc1.FIX.txt"))){
 				runsys("$NEATFREQ_INSTALL/NeatFreq.pl -p $NF_prefix -b $bin_extract_type -x $cov_in -r AUTO_FORMAT.frg.fasta -rpairs AUTO_FORMAT.prs.fasta -c allreads.mer_counts.minocc1.FIX.txt -z -m $mem -v");
@@ -308,7 +321,7 @@ MAIN : {
 				}
 				
 				if ($fastq_bool == 0){ runsys("perl $NEATFREQ_INSTALL/NeatFreq_postprocess_random.pl -ids $ids -numfrg $numfrg -frag AUTO_FORMAT.frg.fasta -pair AUTO_FORMAT.prs.fasta");
-				}else{ runsys("perl $NEATFREQ_INSTALL/NeatFreq_postprocess_random.pl -ids $ids -numfrg $numfrg -frag AUTO_FORMAT.frg.fastq -pair AUTO_FORMAT.prs.fastq"); }
+				}else{ runsys("perl $NEATFREQ_INSTALL/NeatFreq_postprocess_random.pl -ids $ids -numfrg $numfrg -frag AUTO_FORMAT.frg.fastq -pair AUTO_FORMAT.prs.fastq -q"); }
 			
 			}elsif( ($run_as_frag_bool == 1) && ($toggle == 1) ){
 			
@@ -445,7 +458,7 @@ MAIN : {
 				}
 				
 				if ($fastq_bool == 0){ runsys("perl $NEATFREQ_INSTALL/NeatFreq_postprocess_random.pl -N $NEW_NEATFREQ_INSTALL -ids $ids -numfrg $numfrg -frag AUTO_FORMAT.frg.fasta -pair AUTO_FORMAT.prs.fasta");
-				}else{ runsys("perl $NEATFREQ_INSTALL/NeatFreq_postprocess_random.pl -N $NEW_NEATFREQ_INSTALL -ids $ids -numfrg $numfrg -frag AUTO_FORMAT.frg.fastq -pair AUTO_FORMAT.prs.fastq"); }
+				}else{ runsys("perl $NEATFREQ_INSTALL/NeatFreq_postprocess_random.pl -N $NEW_NEATFREQ_INSTALL -ids $ids -numfrg $numfrg -q -frag AUTO_FORMAT.frg.fastq -pair AUTO_FORMAT.prs.fastq"); }
 			
 			}elsif( ($run_as_frag_bool == 1) && ($toggle == 1) ){
 			
