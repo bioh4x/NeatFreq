@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 # J. Craig Venter Institute
-# NeatFreq ver 1.0
+# NeatFreq ver 1.0.1
 # Written by Jamison M. McCorrison (jmccorri@jcvi.org)
 
 use strict;
